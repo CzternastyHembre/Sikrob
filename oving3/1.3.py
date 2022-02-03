@@ -143,3 +143,57 @@ print("\n", graph.betweenness_centrality())
 
 
 print("\n\n", interuptCount)
+
+
+//////
+
+# Bus
+print("## Closesness centrality for StarGraph: \n")
+print("$$\\text{The formula for closesness centrality for a node is:}$$\n")
+
+print("$$\\frac{\\text{Amount of nodes - 1}}{\\text{Total distance form that node to every other}}$$\n")
+
+
+graph = StarGraph(8)
+
+# Creating a dictionary for each node and setting the start value to 0
+totalDist = {}
+for node in graph:
+    totalDist[node] = []
+
+for start_node in graph:
+    for end_node in graph:
+        # Doesn't count the dist from itself (even though it's 0)
+        if start_node == end_node:
+            continue
+
+        # The distance from a node to another is
+        # The length of the shortest path - 1 (because you don't count with the starting node)
+        d = len(graph.get_shortest_path(start_node, end_node)) - 1
+
+        # Adding the distance for that node to the dictionary to
+        # eventually getting the sum of all distances for the node to another
+        totalDist[start_node].append(
+            graph.get_shortest_path(start_node, end_node)[1:])
+
+
+for node, total_distt in totalDist.items():
+
+    total_dist = 0
+    for l in total_distt:
+        total_dist += len(l)
+    closeness_centrality = (len(graph) - 1) / total_dist
+    node_str = "Node " + str(node) + ":"
+    formula_str = "$$\\text{Closeness centrality} = \\frac{" + str(len(graph)) + "-1}{" + str(total_dist) + "} \\implies \\frac{" + str(
+        len(graph)-1) + "}{" + str(total_dist) + "} \\implies " + str(round(closeness_centrality, 2)) + "$$"
+    #print(node_str, "Closeness centrality =" , formula_str, "=>", closeness_centrality)
+
+    node_str = "**Node " + str(node) + "**"
+
+    print(node_str, ": Shortest path to each node:\n\n")
+    for p in total_distt:
+        print("Path from", node, "to", p[len(p)-1], "=", p, "=", len(p))
+        print()
+
+    print("Total length:", total_dist)
+    print(formula_str)

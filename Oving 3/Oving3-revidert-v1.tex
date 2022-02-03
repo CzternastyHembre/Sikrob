@@ -1,0 +1,2878 @@
+\documentclass[11pt]{article}
+
+    \usepackage[breakable]{tcolorbox}
+    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+    
+    \usepackage{iftex}
+    \ifPDFTeX
+    	\usepackage[T1]{fontenc}
+    	\usepackage{mathpazo}
+    \else
+    	\usepackage{fontspec}
+    \fi
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+    \usepackage[mathletters]{ucs} % Extended unicode (utf-8) support
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics 
+                         % to support a larger range
+    \makeatletter % fix for old versions of grffile with XeLaTeX
+    \@ifpackagelater{grffile}{2019/11/01}
+    {
+      % Do nothing on new versions
+    }
+    {
+      \def\Gread@@xetex#1{%
+        \IfFileExists{"\Gin@base".bb}%
+        {\Gread@eps{\Gin@base.bb}}%
+        {\Gread@@xetex@aux#1}%
+      }
+    }
+    \makeatother
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{mathrsfs}
+    
+
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % common color for the border for error outputs.
+    \definecolor{outerrorbackground}{HTML}{FFDFDF}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+    
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    
+    
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    % Document title
+    \title{Oving3-revidert-v1}
+    
+    
+    
+    
+    
+% Pygments definitions
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\@namedef{PY@tok@w}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\@namedef{PY@tok@c}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cp}{\def\PY@tc##1{\textcolor[rgb]{0.74,0.48,0.00}{##1}}}
+\@namedef{PY@tok@k}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kt}{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\@namedef{PY@tok@o}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ow}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@nb}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nf}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@ne}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.82,0.25,0.23}{##1}}}
+\@namedef{PY@tok@nv}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@no}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\@namedef{PY@tok@nl}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.63,0.00}{##1}}}
+\@namedef{PY@tok@ni}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.60,0.60,0.60}{##1}}}
+\@namedef{PY@tok@na}{\def\PY@tc##1{\textcolor[rgb]{0.49,0.56,0.16}{##1}}}
+\@namedef{PY@tok@nt}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nd}{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@s}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sd}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@si}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\@namedef{PY@tok@se}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.13}{##1}}}
+\@namedef{PY@tok@sr}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\@namedef{PY@tok@ss}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sx}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@m}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@gh}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gu}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gd}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\@namedef{PY@tok@gi}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.63,0.00}{##1}}}
+\@namedef{PY@tok@gr}{\def\PY@tc##1{\textcolor[rgb]{1.00,0.00,0.00}{##1}}}
+\@namedef{PY@tok@ge}{\let\PY@it=\textit}
+\@namedef{PY@tok@gs}{\let\PY@bf=\textbf}
+\@namedef{PY@tok@gp}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@go}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.53,0.53}{##1}}}
+\@namedef{PY@tok@gt}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\@namedef{PY@tok@err}{\def\PY@bc##1{{\setlength{\fboxsep}{\string -\fboxrule}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}}
+\@namedef{PY@tok@kc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kd}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kr}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@bp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@fm}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@vc}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vg}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vi}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vm}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sa}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sb}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sc}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@dl}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s2}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sh}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s1}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@mb}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mf}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mh}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mi}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@il}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mo}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ch}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cm}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cpf}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@c1}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cs}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % For linebreaks inside Verbatim environment from package fancyvrb. 
+    \makeatletter
+        \newbox\Wrappedcontinuationbox 
+        \newbox\Wrappedvisiblespacebox 
+        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}} 
+        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}} 
+        \newcommand*\Wrappedcontinuationindent {3ex } 
+        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox} 
+        % Take advantage of the already applied Pygments mark-up to insert 
+        % potential linebreaks for TeX processing. 
+        %        {, <, #, %, $, ' and ": go to next line. 
+        %        _, }, ^, &, >, - and ~: stay at end of broken line. 
+        % Use of \textquotesingle for straight quote. 
+        \newcommand*\Wrappedbreaksatspecials {% 
+            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}% 
+            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}% 
+            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}% 
+            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}% 
+            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}% 
+            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}% 
+            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}% 
+            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}% 
+            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}% 
+            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}% 
+            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}% 
+            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}% 
+            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}% 
+            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}% 
+        } 
+        % Some characters . , ; ? ! / are not pygmentized. 
+        % This macro makes them "active" and they will insert potential linebreaks 
+        \newcommand*\Wrappedbreaksatpunct {% 
+            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}% 
+            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}% 
+            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}% 
+            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}% 
+            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}% 
+            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}% 
+            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}% 
+            \catcode`\.\active
+            \catcode`\,\active 
+            \catcode`\;\active
+            \catcode`\:\active
+            \catcode`\?\active
+            \catcode`\!\active
+            \catcode`\/\active 
+            \lccode`\~`\~ 	
+        }
+    \makeatother
+
+    \let\OriginalVerbatim=\Verbatim
+    \makeatletter
+    \renewcommand{\Verbatim}[1][1]{%
+        %\parskip\z@skip
+        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
+        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
+        \def\FancyVerbFormatLine ##1{\hsize\linewidth
+            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
+                \doublehyphendemerits\z@\finalhyphendemerits\z@
+                \strut ##1\strut}%
+        }%
+        % If the linebreak is at a space, the latter will be displayed as visible
+        % space at end of first line, and a continuation symbol starts next line.
+        % Stretch/shrink are however usually zero for typewriter font.
+        \def\FV@Space {%
+            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
+            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
+            {\kern\fontdimen2\font}%
+        }%
+        
+        % Allow breaks at special characters using \PYG... macros.
+        \Wrappedbreaksatspecials
+        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active 	
+        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
+    }
+    \makeatother
+
+    % Exact colors from NB
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+    
+    % prompt
+    \makeatletter
+    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
+    \makeatother
+    \newcommand{\prompt}[4]{
+        {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
+    }
+    
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy 
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+\begin{document}
+    
+    \maketitle
+    
+    
+
+    
+    \emph{Sjekk først at du har installert pakkene riktig ved å kjøre
+kodeblokken under:}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{2}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{graph\PYZus{}utils}\PY{n+nn}{.}\PY{n+nn}{graph} \PY{k+kn}{import} \PY{n}{Graph}\PY{p}{,} \PY{n}{nx}\PY{p}{,} \PY{n}{plt}
+\PY{k+kn}{from} \PY{n+nn}{graph\PYZus{}utils}\PY{n+nn}{.}\PY{n+nn}{buss\PYZus{}graph} \PY{k+kn}{import} \PY{n}{BussGraph}
+\PY{k+kn}{from} \PY{n+nn}{graph\PYZus{}utils}\PY{n+nn}{.}\PY{n+nn}{tree\PYZus{}graph} \PY{k+kn}{import} \PY{n}{TreeGraph}
+\PY{k+kn}{from} \PY{n+nn}{graph\PYZus{}utils}\PY{n+nn}{.}\PY{n+nn}{ring\PYZus{}graph} \PY{k+kn}{import} \PY{n}{RingGraph}
+\PY{k+kn}{from} \PY{n+nn}{graph\PYZus{}utils}\PY{n+nn}{.}\PY{n+nn}{star\PYZus{}graph} \PY{k+kn}{import} \PY{n}{StarGraph}
+\PY{k+kn}{from} \PY{n+nn}{graph\PYZus{}utils}\PY{n+nn}{.}\PY{n+nn}{grid\PYZus{}graph} \PY{k+kn}{import} \PY{n}{GridGraph}
+\PY{k+kn}{from} \PY{n+nn}{graph\PYZus{}utils}\PY{n+nn}{.}\PY{n+nn}{mesh\PYZus{}graph} \PY{k+kn}{import} \PY{n}{MeshGraph}
+\PY{k+kn}{from} \PY{n+nn}{graph\PYZus{}utils}\PY{n+nn}{.}\PY{n+nn}{constructed\PYZus{}graph} \PY{k+kn}{import} \PY{n}{ConstructedGraph}
+\PY{k+kn}{from} \PY{n+nn}{graph\PYZus{}utils}\PY{n+nn}{.}\PY{n+nn}{watts\PYZus{}strogatz} \PY{k+kn}{import} \PY{n}{WattsStrogatz}
+\PY{k+kn}{from} \PY{n+nn}{graph\PYZus{}utils}\PY{n+nn}{.}\PY{n+nn}{barabasi\PYZus{}albert} \PY{k+kn}{import} \PY{n}{BarabasiAlbert}
+\PY{k+kn}{from} \PY{n+nn}{graph\PYZus{}utils}\PY{n+nn}{.}\PY{n+nn}{real\PYZus{}network\PYZus{}graph} \PY{k+kn}{import} \PY{n}{RealNetworkGraph}
+\PY{k+kn}{from} \PY{n+nn}{graph\PYZus{}utils}\PY{n+nn}{.}\PY{n+nn}{vdes\PYZus{}graph} \PY{k+kn}{import} \PY{n}{VDESGraph}
+\PY{k+kn}{from} \PY{n+nn}{graph\PYZus{}utils}\PY{n+nn}{.}\PY{n+nn}{get\PYZus{}network} \PY{k+kn}{import} \PY{n}{get\PYZus{}network}
+\PY{k+kn}{import} \PY{n+nn}{matplotlib}
+\PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
+\PY{k+kn}{import} \PY{n+nn}{random} \PY{k}{as} \PY{n+nn}{r}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \emph{Gå nøye gjennom Introduksjonsnotebooken før du gjør øvingen. Alle
+verktøy du vil trenge presenteres der.}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{3}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{student\PYZus{}seed} \PY{o}{=} \PY{l+m+mi}{10027} \PY{c+c1}{\PYZsh{}ALso student with student\PYZus{}seed: 10064}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{introduksjon}{%
+\section*{Introduksjon}\label{introduksjon}}
+
+I denne øvingen skal vi lære om ulike måter å måle viktigheten, eller
+sentraliteten, til en node i et nettverk. Vi skal også se på ulike
+graftyper, lære enkel analyse og til slutt se på tilfeldige og
+målrettede feil i et nettverk.
+
+Følgende temaer er forventet at du skal kunne etter denne øvingen: *
+Sentraliteter * Mål på sammenkobling av nettverk * Noder i største
+partisjon * Angrepsmål i et nettverk * Viktigheten av en node *
+Angrepsstrategier i nettverk * Robusthet/utholdenhet * Redundans *
+Kostnad ved redundans/trade-offs og effekten av dette
+
+For å gjennomføre denne øvingen forventes det at man har gjennomført
+introduksjonen, og kan bruke verktøyene som ble introdusert der til mer
+krevende oppgaver. For oppgavene nedenfor forventes det at studenten
+klarer å svare kort og konkret.
+
+    \hypertarget{del-1-grafstrukturer-og-centralities}{%
+\section*{Del 1: Grafstrukturer og
+centralities}\label{del-1-grafstrukturer-og-centralities}}
+
+I denne delen skal vi introdusere mål på viktigheten for en node i et
+nettverk. Her skal vi lære om tre forskjellige standariserte mål: *
+degree centrality * betweenness centrality * closeness centrality.
+
+Vi skal også ta en nærmere titt på ulike graftyper og analysere deres
+fordeler og ulemper.
+
+    \hypertarget{oppgave-1.1}{%
+\subsection*{Oppgave 1.1}\label{oppgave-1.1}}
+
+Enkle grafstrukturer som er mye brukt er mesh, star, ring, tree og bus.
+Ved hjelp av metodene introdusert i introduksjonen, konstruer og print
+en enkel versjon av hver graf (5-10 noder).
+
+Her forventer vi å se de fem graftypene konstruert og printet
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{9}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Bus}
+\PY{n}{BussGraph}\PY{p}{(}\PY{l+m+mi}{5}\PY{p}{)}\PY{o}{.}\PY{n}{draw}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Oving3-revidert-v1_files/Oving3-revidert-v1_7_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{5}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Ring}
+\PY{n}{RingGraph}\PY{p}{(}\PY{l+m+mi}{5}\PY{p}{)}\PY{o}{.}\PY{n}{draw}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Oving3-revidert-v1_files/Oving3-revidert-v1_8_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{6}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Star}
+\PY{n}{StarGraph}\PY{p}{(}\PY{l+m+mi}{5}\PY{p}{)}\PY{o}{.}\PY{n}{draw}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Oving3-revidert-v1_files/Oving3-revidert-v1_9_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{6}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Tree}
+\PY{n}{TreeGraph}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{)}\PY{o}{.}\PY{n}{draw}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Oving3-revidert-v1_files/Oving3-revidert-v1_10_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{7}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Mesh}
+\PY{n}{MeshGraph}\PY{p}{(}\PY{l+m+mi}{5}\PY{p}{)}\PY{o}{.}\PY{n}{draw}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Oving3-revidert-v1_files/Oving3-revidert-v1_11_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{oppgave-1.2}{%
+\subsection*{Oppgave 1.2}\label{oppgave-1.2}}
+
+For hver av strukturene gitt i oppgave 1.1, kom med et eksempel fra
+virkeligheten som bruker denne strukturen. For hver av strukturene,
+kommenter hva som er styrker og svakheter.
+
+For hver graf forventer vi å se minst ett eksempel på hvor denne
+strukturen brukes. Vi forventer også en kort drøftning på styrker og
+svakheter
+
+    \hypertarget{skriv-svar-her}{%
+\section*{Skriv svar her:}\label{skriv-svar-her}}
+
+\hypertarget{bussgraph}{%
+\subsection*{BussGraph}\label{bussgraph}}
+
+I en et lineært BussGraph-nettverk er alle eneheten koblet til samme
+ryggrad eller buss, bestående av en nettverks-kabel eller lignenende.
+
+\hypertarget{eksempel-ethernet}{%
+\subsubsection*{Eksempel: Ethernet}\label{eksempel-ethernet}}
+
+Det mest relevante eksempelet idag vil være et tradisjonel ethernet
+nettverk, som kan betegnes som et ``Local Area Network''(LAN). I et
+slikt nettverk vil enhver pakke bli sendt til alle enhetene i
+nettverket, med en MAC-adresse til mottaker. Dermed vil bare
+datamaskinen med den gitte MAC-Adressen behandle pakken.
+
+\hypertarget{styrker}{%
+\subsubsection*{Styrker:}\label{styrker}}
+
+\begin{itemize}
+\tightlist
+\item
+  Krever mindre ressurser med tanke på opsett, altså færre kabler.
+\item
+  Enkelt å sette opp og konfigurere
+\item
+  En feil i en enhet reduserer ikke ytelsen av resten av nettverket,
+  annet enn dens egen funskjon.
+\end{itemize}
+
+\hypertarget{svakheter}{%
+\subsubsection*{Svakheter}\label{svakheter}}
+
+\begin{itemize}
+\tightlist
+\item
+  Om ryggraden av nettverket feiler, kollapser hele nettverket.
+\item
+  Ekstremt sakte i forhold til andre typer nettverk, ikke brukbart i
+  stor skala.
+\item
+  Ytelsen reduseres om en legger til flere enheter i nettverket.
+\end{itemize}
+
+\hypertarget{ringgraph}{%
+\subsection*{RingGraph}\label{ringgraph}}
+
+Ring graf viser en nettverk av noder som alle har nøyaktig 2 kanter, og
+man kan alltid ``flytte'' på nodene slik at det ser ut som en ring, som
+kalles ring topologi.
+
+\hypertarget{eksempel-token-passing}{%
+\subsubsection*{Eksempel: Token Passing}\label{eksempel-token-passing}}
+
+En type MAC-protokoll som ble brukt i datanettverk før var ``Token
+passing''. Dette protokollet eliminerer kollisjoner i
+kommunikasjon-nettverket mellom datmaskiner ved at en såkalt ``token''
+ble gitt rundt, som tillot en gitt enheten å være den eneste med tilgang
+til å sende informasjon over kanalen. Denne ``Token'' går på rundgang i
+nettverket for å få en lik fordeling mellom alle de gitte enhetene.
+
+\hypertarget{styrker-1}{%
+\subsubsection*{Styrker}\label{styrker-1}}
+
+\begin{itemize}
+\tightlist
+\item
+  Om en node feiler er det lett å detektere at det er en feil fordi
+  grafen ikke lenger vil ha en sykel
+\item
+  Jevn fordeling av kanter på nodene
+\end{itemize}
+
+\hypertarget{svakheter-1}{%
+\subsubsection*{Svakheter}\label{svakheter-1}}
+
+\begin{itemize}
+\tightlist
+\item
+  Om man en node feiler kan det risikere å ødelegge hele nettverket om
+  man ikke har gode protokoller for det.
+\item
+  I Token passing vil Token alltid blir sendt rundt til alle nodene,
+  selv om en node ikke skal sende noe data, dette bidrar til unødvendig
+  bruk av resurser.
+\item
+  Om man skal legge til / fjerne, kan det påvirke de andre
+  ende-systemene fordi man er nødt til å finne en ny ring før
+  \emph{Token}3 kan sendes videre
+\end{itemize}
+
+\hypertarget{stargraph}{%
+\subsection*{StarGraph}\label{stargraph}}
+
+En slikt nettverke er et utelukkende sentralt nettverk der en har én
+node med en til alle relasjon som en kaller ``hub'', og resten av nodene
+har én til én relasjon til huben.
+
+\hypertarget{eksempel-lan-switch}{%
+\subsubsection*{Eksempel: LAN Switch}\label{eksempel-lan-switch}}
+
+I de flest LAN nettverk i dag, brukes en switch som kan sees på som en
+hub, som kommuniserer med alle ende-systemene. At all trafikk går
+gjennom en hub kan være veldig oversiktlig og elegant, men om huben
+feiler, vil hele nettverket kollapse. Å sikre at huben både tåler
+belastningen av nettverket og er robust, er sentralt for å kunne benytte
+seg av en slik metode.
+
+\hypertarget{styrker-2}{%
+\subsubsection*{Styrker}\label{styrker-2}}
+
+\begin{itemize}
+\tightlist
+\item
+  Enkelt og billig å sette opp
+\item
+  Hvis et ende-system feiler, vil det ikke ha noe negativ påvirkning på
+  de andre ende-systemene
+\item
+  Det går veldig raskt om det er lav datatrafikk, fordi man kan sende
+  data med én gang inn til hubben uten å måtte vente på f.eks. en Token
+\end{itemize}
+
+\hypertarget{svakheter-2}{%
+\subsubsection*{Svakheter}\label{svakheter-2}}
+
+\begin{itemize}
+\tightlist
+\item
+  Kan være sårbart med et så sentralt nettverk; Feiler huben, kollapser
+  hele nettet.
+\item
+  Høy trafikk kan redusere ytelsen av nettverket betydelig.
+\item
+  Kostbart å installere nettverket.
+\end{itemize}
+
+\hypertarget{treegraph}{%
+\subsection*{TreeGraph}\label{treegraph}}
+
+I et slikt nettverk har man en rotnode som blir ekspandert på av resten
+av nettverket på en hierarkisk måte.
+
+\hypertarget{eksempel}{%
+\subsubsection*{Eksempel :}\label{eksempel}}
+
+\hypertarget{styrker-3}{%
+\subsubsection*{Styrker}\label{styrker-3}}
+
+\begin{itemize}
+\tightlist
+\item
+  Lettvint å ekspandere nettverket
+\item
+  Feil-håndtering er også lettvint
+\end{itemize}
+
+\hypertarget{svakheter-3}{%
+\subsubsection*{Svakheter}\label{svakheter-3}}
+
+\begin{itemize}
+\tightlist
+\item
+  Hvis rotnoden feiler, kollapser hele nettverket
+\item
+  Vanskelig å konfigurere
+\end{itemize}
+
+\hypertarget{meshgraph}{%
+\subsection*{MeshGraph}\label{meshgraph}}
+
+I et Mesh-nettverk er korteste vei mellom en til alle enehtene 1 kant,
+og en har mange muligheter for å nå samme punkt. Det gjør dermed Mesh
+til en svært robust måte å bygge nettverk på.
+
+\hypertarget{eksempel-peer-to-peer}{%
+\subsubsection*{Eksempel Peer-To-Peer:}\label{eksempel-peer-to-peer}}
+
+P2P-nettverk har en desentralisert struktur der enhver enhet er
+``likverdige''. I et slikt nettverk deler man ressurser og igjen arbeid
+mot nettverkets ``formål''. I et slikt nettverk er ofte hver node både
+bruker og leverandør, som igjen gjør det svært robust.
+
+\hypertarget{styrker-4}{%
+\subsubsection*{Styrker}\label{styrker-4}}
+
+\begin{itemize}
+\tightlist
+\item
+  Svært pålitleig kommunikasjon over nettverket. Om en kant eller node
+  feiler vil det det være en alternativ vei å lever pakken.
+\item
+  Vanskelig å overbelaste nettverket da det er mange koblinger.
+\end{itemize}
+
+\hypertarget{svakheter-4}{%
+\subsubsection*{Svakheter}\label{svakheter-4}}
+
+\begin{itemize}
+\tightlist
+\item
+  Kostbart å bygge nettverket, samt at det er vanskelig å konfigurere.
+\item
+  Kostbart å legge til flere enheter i nettverket.
+\item
+  Krever svært mye fysisk infrastruktur om en gjør det lokalt. Krav om
+  mye kabler, porter og ikke minst plass.
+\end{itemize}
+
+    \hypertarget{oppgave-1.3}{%
+\subsection*{Oppgave 1.3}\label{oppgave-1.3}}
+
+For hver graf, finn noden med høyest degree centrality for hånd. Vis
+utregning og forklar viktigheten en node med høy degree centrality
+tilføyer nettverket.
+
+Her forventer vi å se at man har forstått seg på hva begrepet degree
+centrality handler om, og funnet den viktigste noden. Vi forventer også
+å se utregning og at studenten ikke har funnet svaret med å bruke en
+metode. Til slutt forventer vi en kort kommentar på hvorfor denne noden
+er viktig.
+
+    \hypertarget{bussgraph}{%
+\subsection*{BussGraph}\label{bussgraph}}
+
+\[\text{Formelen for degree centrality for hver node er:}\]
+
+\[\frac{(\text{antall kanter noden har})}{(\text{antal noder i grafen - 1})}\]
+
+\[\text{Node}_0 = \frac{1}{5 - 1} \implies \frac{1}{4} \implies \underline{\underline{ 0.25}}\]
+
+\[\text{Node}_1 = \frac{2}{5 - 1} \implies \frac{2}{4} \implies \underline{\underline{ 0.5}}\]
+
+\[\text{Node}_2 = \frac{2}{5 - 1} \implies \frac{2}{4} \implies \underline{\underline{ 0.5}}\]
+
+\[\text{Node}_3 = \frac{2}{5 - 1} \implies \frac{2}{4} \implies \underline{\underline{ 0.5}}\]
+
+\[\text{Node}_4 = \frac{1}{5 - 1} \implies \frac{1}{4} \implies \underline{\underline{ 0.25}}\]
+
+Her ser vi at node 1,2 og 3 har høyest degree centrality på 0.5 i denne
+grafen er det vitig at disse nodene ikke feiler, fordi om de feiler
+deler vi nettverket i 2 partisjoner (regionalnett).
+
+    \hypertarget{ringgraph}{%
+\subsection*{RingGraph}\label{ringgraph}}
+
+\[\text{Formelen for degree centrality for hver node er:}\]
+
+\[\frac{(\text{antall kanter noden har})}{(\text{antal noder i grafen - 1})}\]
+
+\[\text{Node}_0 = \frac{2}{5 - 1} \implies \frac{2}{4} \implies \underline{\underline{ 0.5}}\]
+
+\[\text{Node}_1 = \frac{2}{5 - 1} \implies \frac{2}{4} \implies \underline{\underline{ 0.5}}\]
+
+\[\text{Node}_2 = \frac{2}{5 - 1} \implies \frac{2}{4} \implies \underline{\underline{ 0.5}}\]
+
+\[\text{Node}_3 = \frac{2}{5 - 1} \implies \frac{2}{4} \implies \underline{\underline{ 0.5}}\]
+
+\[\text{Node}_4 = \frac{2}{5 - 1} \implies \frac{2}{4} \implies \underline{\underline{ 0.5}}\]
+
+Her ser vi at alle nodene har like stor degree centrality på 0.5 fordi i
+en ringgraf vi alle nodene ha to kanter.
+
+    \hypertarget{stargraph}{%
+\subsection*{StarGraph}\label{stargraph}}
+
+\[\text{Formelen for degree centrality for hver node er:}\]
+
+\[\frac{(\text{antall kanter noden har})}{(\text{antal noder i grafen - 1})}\]
+
+\[\text{Node}_0 = \frac{5}{6 - 1} \implies \frac{5}{5} \implies \underline{\underline{ 1.0}}\]
+
+\[\text{Node}_1 = \frac{1}{6 - 1} \implies \frac{1}{5} \implies \underline{\underline{ 0.2}}\]
+
+\[\text{Node}_2 = \frac{1}{6 - 1} \implies \frac{1}{5} \implies \underline{\underline{ 0.2}}\]
+
+\[\text{Node}_3 = \frac{1}{6 - 1} \implies \frac{1}{5} \implies \underline{\underline{ 0.2}}\]
+
+\[\text{Node}_4 = \frac{1}{6 - 1} \implies \frac{1}{5} \implies \underline{\underline{ 0.2}}\]
+
+\[\text{Node}_5 = \frac{1}{6 - 1} \implies \frac{1}{5} \implies \underline{\underline{ 0.2}}\]
+
+Her ser vi at det er én node med vesentrlig høyere degree centraliy på
+1, som er den høyeste verdien man kan ha, som vil se at den har alle
+kantene i grafen. om denne node feiler vil alle kantene ``forsvinne'' og
+ingen node i nettverket vil kunne kommunisere med hverandre.
+
+    \hypertarget{treegraph}{%
+\subsection*{TreeGraph:}\label{treegraph}}
+
+\[\text{Formelen for degree centrality for hver node er:}\]
+
+\[\frac{(\text{antall kanter noden har})}{(\text{antal noder i grafen - 1})}\]
+
+\[\text{Node}_0 = \frac{2}{7 - 1} \implies \frac{2}{6} \implies \underline{\underline{ 0.33}}\]
+
+\[\text{Node}_1 = \frac{3}{7 - 1} \implies \frac{3}{6} \implies \underline{\underline{ 0.5}}\]
+
+\[\text{Node}_2 = \frac{3}{7 - 1} \implies \frac{3}{6} \implies \underline{\underline{ 0.5}}\]
+
+\[\text{Node}_3 = \frac{1}{7 - 1} \implies \frac{1}{6} \implies \underline{\underline{ 0.17}}\]
+
+\[\text{Node}_4 = \frac{1}{7 - 1} \implies \frac{1}{6} \implies \underline{\underline{ 0.17}}\]
+
+\[\text{Node}_5 = \frac{1}{7 - 1} \implies \frac{1}{6} \implies \underline{\underline{ 0.17}}\]
+
+\[\text{Node}_6 = \frac{1}{7 - 1} \implies \frac{1}{6} \implies \underline{\underline{ 0.17}}\]
+
+Her ser vi at det er 2 noder med høyes degree centrality på 0.5, disse
+nodene i dette tillfellet er essensielle fordi, de kobler alle nodene
+sammen og uten disse to vil det ikke være noen kanter igjen i
+nettverket.
+
+    \hypertarget{meshgraph}{%
+\subsection*{MeshGraph}\label{meshgraph}}
+
+\[\text{Formelen for degree centrality for hver node er:}\]
+
+\[\frac{(\text{antall kanter noden har})}{(\text{antal noder i grafen - 1})}\]
+
+\[\text{Node}_0 = \frac{4}{5 - 1} \implies \frac{4}{4} \implies \underline{\underline{ 1.0}}\]
+
+\[\text{Node}_1 = \frac{4}{5 - 1} \implies \frac{4}{4} \implies \underline{\underline{ 1.0}}\]
+
+\[\text{Node}_2 = \frac{4}{5 - 1} \implies \frac{4}{4} \implies \underline{\underline{ 1.0}}\]
+
+\[\text{Node}_3 = \frac{4}{5 - 1} \implies \frac{4}{4} \implies \underline{\underline{ 1.0}}\]
+
+\[\text{Node}_4 = \frac{4}{5 - 1} \implies \frac{4}{4} \implies \underline{\underline{ 1.0}}\]
+
+Her har alle nodene en maks-score på 1 i degree centrality, som vil si
+at alle nodene i grafen har en direkte til hverandre. viktigheten til én
+av disse nodene forsvinner litt da, fordi uansett hvilken node man
+fjerner, vil fortsatt alle nodene har degree centrality på 1, og
+fortsatt kunne kommunisere med direkte med alle de andre nodene.
+
+    \hypertarget{oppgave-1.4}{%
+\subsection*{Oppgave 1.4}\label{oppgave-1.4}}
+
+For hver graf, finn noden med høyest betweenness centrality for hånd.
+Vis utregning og forklar viktigheten en node med høy degree centrality
+tilføyer nettverket.
+
+Her forventer vi å se at man har forstått seg på hva begrepet
+betweenness centrality handler om, og funnet den viktigste noden. Vi
+forventer også å se utregning og at studenten ikke har funnet svaret med
+å bruke en metode. Til slutt forventer vi en kort kommentar på hvorfor
+denne noden er viktig
+
+    \hypertarget{betweenness-centrality-for-bussgraph}{%
+\subsection*{Betweenness centrality for
+BussGraph}\label{betweenness-centrality-for-bussgraph}}
+
+\[\text{Formelen betweenness centrality for en node er:}\]
+
+\[\frac{\text{Antall ganger noden er i en korteste sti mellom alle nodepar}}{\frac{\text{(antall noder - 1)(antall noder - 2)}}{2}}\]
+
+\[\text{Node}_0:\] \[\text{Korteste veiene noden er i:}\]
+
+\[ [] \implies 0 \]
+
+\[ \frac{0}{\frac{(5-1)*(5-2)}{2}} \implies \frac{0*2}{12} \implies \underline{\underline{ 0.0 }}\]
+
+\[\text{Node}_1:\] \[\text{Korteste veiene noden er i:}\]
+
+\[ [(0, 2), (0, 3), (0, 4)] \implies 3 \]
+
+\[ \frac{3}{\frac{(5-1)*(5-2)}{2}} \implies \frac{3*2}{12} \implies \underline{\underline{ 0.5 }}\]
+
+\[\text{Node}_2:\] \[\text{Korteste veiene noden er i:}\]
+
+\[ [(0, 3), (0, 4), (1, 3), (1, 4)] \implies 4 \]
+
+\[ \frac{4}{\frac{(5-1)*(5-2)}{2}} \implies \frac{4*2}{12} \implies \underline{\underline{ 0.67 }}\]
+
+\[\text{Node}_3:\] \[\text{Korteste veiene noden er i:}\]
+
+\[ [(0, 4), (1, 4), (2, 4)] \implies 3 \]
+
+\[ \frac{3}{\frac{(5-1)*(5-2)}{2}} \implies \frac{3*2}{12} \implies \underline{\underline{ 0.5 }}\]
+
+\[\text{Node}_4:\] \[\text{Korteste veiene noden er i:}\]
+
+\[ [] \implies 0 \]
+
+\[ \frac{0}{\frac{(5-1)*(5-2)}{2}} \implies \frac{0*2}{12} \implies \underline{\underline{ 0.0 }}\]
+
+Her ser vi at det er én node som har høyest betweenness centrality på
+0.67. Dette er fordi det er noden i midten av bussen, og da gir det
+mening at den noden er inkludert i flest stier. Viktigheten til den
+noden er stor på grunn av nettopp dette.
+
+    \hypertarget{betweenness-centrality-for-ringgraph}{%
+\subsection*{Betweenness centrality for
+RingGraph}\label{betweenness-centrality-for-ringgraph}}
+
+\[\text{Formelen betweenness centrality for en node er:}\]
+
+\[\frac{\text{Antall ganger noden er i en korteste sti mellom alle nodepar}}{\frac{\text{(antall noder - 1)(antall noder - 2)}}{2}}\]
+
+\[\text{Node}_0:\] \[\text{Korteste veiene noden er i:}\]
+
+\[ [(1, 4)] \implies 1 \]
+
+\[ \frac{1}{\frac{(5-1)*(5-2)}{2}} \implies \frac{1*2}{12} \implies \underline{\underline{ 0.17 }}\]
+
+\[\text{Node}_1:\] \[\text{Korteste veiene noden er i:}\]
+
+\[ [(0, 2)] \implies 1 \]
+
+\[ \frac{1}{\frac{(5-1)*(5-2)}{2}} \implies \frac{1*2}{12} \implies \underline{\underline{ 0.17 }}\]
+
+\[\text{Node}_2:\] \[\text{Korteste veiene noden er i:}\]
+
+\[ [(1, 3)] \implies 1 \]
+
+\[ \frac{1}{\frac{(5-1)*(5-2)}{2}} \implies \frac{1*2}{12} \implies \underline{\underline{ 0.17 }}\]
+
+\[\text{Node}_3:\] \[\text{Korteste veiene noden er i:}\]
+
+\[ [(2, 4)] \implies 1 \]
+
+\[ \frac{1}{\frac{(5-1)*(5-2)}{2}} \implies \frac{1*2}{12} \implies \underline{\underline{ 0.17 }}\]
+
+\[\text{Node}_4:\] \[\text{Korteste veiene noden er i:}\]
+
+\[ [(0, 3)] \implies 1 \]
+
+\[ \frac{1}{\frac{(5-1)*(5-2)}{2}} \implies \frac{1*2}{12} \implies \underline{\underline{ 0.17 }}\]
+
+Her ser vi at alle nodene i ringgrafen har lik betweenness centrality på
+0.17 bare, dette er et ganske lavt tall siden betweenness centrality gir
+en standarisert score mellom 0 og 1.
+
+    \hypertarget{betweenness-centrality-for-stargraph}{%
+\subsection*{Betweenness centrality for
+StarGraph}\label{betweenness-centrality-for-stargraph}}
+
+\[\text{Formelen betweenness centrality for en node er:}\]
+
+\[\frac{\text{Antall ganger noden er i en korteste sti mellom alle nodepar}}{\frac{\text{(antall noder - 1)(antall noder - 2)}}{2}}\]
+
+\[\text{Node}_0:\] \[\text{Korteste veiene noden er i:}\]
+
+\[ [(1, 2), (1, 3), (1, 4), (1, 5), (2, 3), (2, 4), (2, 5), (3, 4), (3, 5), (4, 5)] \implies 10 \]
+
+\[ \frac{10}{\frac{(6-1)*(6-2)}{2}} \implies \frac{10*2}{20} \implies \underline{\underline{ 1.0 }}\]
+
+\[\text{Node}_1:\] \[\text{Korteste veiene noden er i:}\]
+
+\[ [] \implies 0 \]
+
+\[ \frac{0}{\frac{(6-1)*(6-2)}{2}} \implies \frac{0*2}{20} \implies \underline{\underline{ 0.0 }}\]
+
+\[\text{Node}_2:\] \[\text{Korteste veiene noden er i:}\]
+
+\[ [] \implies 0 \]
+
+\[ \frac{0}{\frac{(6-1)*(6-2)}{2}} \implies \frac{0*2}{20} \implies \underline{\underline{ 0.0 }}\]
+
+\[\text{Node}_3:\] \[\text{Korteste veiene noden er i:}\]
+
+\[ [] \implies 0 \]
+
+\[ \frac{0}{\frac{(6-1)*(6-2)}{2}} \implies \frac{0*2}{20} \implies \underline{\underline{ 0.0 }}\]
+
+\[\text{Node}_4:\] \[\text{Korteste veiene noden er i:}\]
+
+\[ [] \implies 0 \]
+
+\[ \frac{0}{\frac{(6-1)*(6-2)}{2}} \implies \frac{0*2}{20} \implies \underline{\underline{ 0.0 }}\]
+
+\[\text{Node}_5:\] \[\text{Korteste veiene noden er i:}\]
+
+\[ [] \implies 0 \]
+
+\[ \frac{0}{\frac{(6-1)*(6-2)}{2}} \implies \frac{0*2}{20} \implies \underline{\underline{ 0.0 }}\]
+
+Her ser vi at alle nodene har betweenness centrality på 0, unatt en node
+som har betweenness centrality på 1, dette er en vedlig sentral node i
+grafen. Siden alle andre noder har betweenness centrality på 0, vil det
+si at node 0 er den eneste som kan være med i stien uten at den er
+start- eller ende-noden.
+
+    \hypertarget{betweenness-centrality-for-treegraph}{%
+\subsection*{Betweenness centrality for
+TreeGraph}\label{betweenness-centrality-for-treegraph}}
+
+\[\text{Formelen betweenness centrality for en node er:}\]
+
+\[\frac{\text{Antall ganger noden er i en korteste sti mellom alle nodepar}}{\frac{\text{(antall noder - 1)(antall noder - 2)}}{2}}\]
+
+\[\text{Node}_0:\] \[\text{Korteste veiene noden er i:}\]
+
+\[ [(1, 2), (1, 5), (1, 6), (2, 3), (2, 4), (3, 5), (3, 6), (4, 5), (4, 6)] \implies 9 \]
+
+\[ \frac{9}{\frac{(7-1)*(7-2)}{2}} \implies \frac{9*2}{30} \implies \underline{\underline{ 0.6 }}\]
+
+\[\text{Node}_1:\] \[\text{Korteste veiene noden er i:}\]
+
+\[ [(0, 3), (0, 4), (2, 3), (2, 4), (3, 4), (3, 5), (3, 6), (4, 5), (4, 6)] \implies 9 \]
+
+\[ \frac{9}{\frac{(7-1)*(7-2)}{2}} \implies \frac{9*2}{30} \implies \underline{\underline{ 0.6 }}\]
+
+\[\text{Node}_2:\] \[\text{Korteste veiene noden er i:}\]
+
+\[ [(0, 5), (0, 6), (1, 5), (1, 6), (3, 5), (3, 6), (4, 5), (4, 6), (5, 6)] \implies 9 \]
+
+\[ \frac{9}{\frac{(7-1)*(7-2)}{2}} \implies \frac{9*2}{30} \implies \underline{\underline{ 0.6 }}\]
+
+\[\text{Node}_3:\] \[\text{Korteste veiene noden er i:}\]
+
+\[ [] \implies 0 \]
+
+\[ \frac{0}{\frac{(7-1)*(7-2)}{2}} \implies \frac{0*2}{30} \implies \underline{\underline{ 0.0 }}\]
+
+\[\text{Node}_4:\] \[\text{Korteste veiene noden er i:}\]
+
+\[ [] \implies 0 \]
+
+\[ \frac{0}{\frac{(7-1)*(7-2)}{2}} \implies \frac{0*2}{30} \implies \underline{\underline{ 0.0 }}\]
+
+\[\text{Node}_5:\] \[\text{Korteste veiene noden er i:}\]
+
+\[ [] \implies 0 \]
+
+\[ \frac{0}{\frac{(7-1)*(7-2)}{2}} \implies \frac{0*2}{30} \implies \underline{\underline{ 0.0 }}\]
+
+\[\text{Node}_6:\] \[\text{Korteste veiene noden er i:}\]
+
+\[ [] \implies 0 \]
+
+\[ \frac{0}{\frac{(7-1)*(7-2)}{2}} \implies \frac{0*2}{30} \implies \underline{\underline{ 0.0 }}\]
+
+Her er det 3 noder med betweenness centrality på 0.6, mens resten av
+nodene har betweenness centrality på 0. Da vil disse nodene være veldig
+viktige når det kommer til stier mellom nodene. mens de på 0 vil ikke ha
+noen betydning når det kommer til å danne stier videre.
+
+    \hypertarget{betweenness-centrality-for-meshgraph}{%
+\subsection*{Betweenness centrality for
+MeshGraph}\label{betweenness-centrality-for-meshgraph}}
+
+\[\text{Formelen betweenness centrality for en node er:}\]
+
+\[\frac{\text{Antall ganger noden er i en korteste sti mellom alle nodepar}}{\frac{\text{(antall noder - 1)(antall noder - 2)}}{2}}\]
+
+\[\text{Node}_0:\] \[\text{Korteste veiene noden er i:}\]
+
+\[ [] \implies 0 \]
+
+\[ \frac{0}{\frac{(5-1)*(5-2)}{2}} \implies \frac{0*2}{12} \implies \underline{\underline{ 0.0 }}\]
+
+\[\text{Node}_1:\] \[\text{Korteste veiene noden er i:}\]
+
+\[ [] \implies 0 \]
+
+\[ \frac{0}{\frac{(5-1)*(5-2)}{2}} \implies \frac{0*2}{12} \implies \underline{\underline{ 0.0 }}\]
+
+\[\text{Node}_2:\] \[\text{Korteste veiene noden er i:}\]
+
+\[ [] \implies 0 \]
+
+\[ \frac{0}{\frac{(5-1)*(5-2)}{2}} \implies \frac{0*2}{12} \implies \underline{\underline{ 0.0 }}\]
+
+\[\text{Node}_3:\] \[\text{Korteste veiene noden er i:}\]
+
+\[ [] \implies 0 \]
+
+\[ \frac{0}{\frac{(5-1)*(5-2)}{2}} \implies \frac{0*2}{12} \implies \underline{\underline{ 0.0 }}\]
+
+\[\text{Node}_4:\] \[\text{Korteste veiene noden er i:}\]
+
+\[ [] \implies 0 \]
+
+\[ \frac{0}{\frac{(5-1)*(5-2)}{2}} \implies \frac{0*2}{12} \implies \underline{\underline{ 0.0 }}\]
+
+Her ser vi fort at alle nodene har betweenness centrality på 0. Dette
+kommer av at alle nodene har en direkte sti til hverandre, og derfor
+trenger man ikke å bruke andre noder til å finne korteste sti til en
+annen node. Det vil også si at nodene ikke er viktige når det kommer til
+å finne stier til andre noder.
+
+    \hypertarget{oppgave-1.5}{%
+\subsection*{Oppgave 1.5}\label{oppgave-1.5}}
+
+For hver graf, finn noden med høyest closeness centrality for hånd. Vis
+utregning og forklar viktigheten en node med høy degree centrality
+tilføyer nettverket.
+
+Her forventer vi å se at man har forstått seg på hva begrepet closeness
+centrality handler om, og funnet den viktigste noden. Vi forventer også
+å se utregning og at studenten ikke har funnet svaret med å bruke en
+metode. Til slutt forventer vi en kort kommentar på hvorfor denne noden
+er viktig
+
+    \hypertarget{closesness-centrality-for-bussgraph}{%
+\subsection*{Closesness centrality for
+BussGraph:}\label{closesness-centrality-for-bussgraph}}
+
+\[\text{Formelen for closesness centrality for en node er:}\]
+
+\[\frac{\text{Antall noder - 1}}{\text{Den totale avstanden fra den noden til alle andre noder}}\]
+
+\textbf{Node 0}, den korteste veien til hver node:
+
+Korteste vei fra 0 til 1 = {[}1{]} = 1
+
+Korteste vei fra 0 til 2 = {[}1, 2{]} = 2
+
+Korteste vei fra 0 til 3 = {[}1, 2, 3{]} = 3
+
+Korteste vei fra 0 til 4 = {[}1, 2, 3, 4{]} = 4
+
+Den totale lengden: 10
+\[\text{Closeness centrality} = \frac{5 - 1}{10} \implies \frac{4}{10} \implies\underline{\underline{ 0.4 }}\]
+
+\textbf{Node 1}, den korteste veien til hver node:
+
+Korteste vei fra 1 til 0 = {[}0{]} = 1
+
+Korteste vei fra 1 til 2 = {[}2{]} = 1
+
+Korteste vei fra 1 til 3 = {[}2, 3{]} = 2
+
+Korteste vei fra 1 til 4 = {[}2, 3, 4{]} = 3
+
+Den totale lengden: 7
+\[\text{Closeness centrality} = \frac{5 - 1}{7} \implies \frac{4}{7} \implies\underline{\underline{ 0.57 }}\]
+
+\textbf{Node 2}, den korteste veien til hver node:
+
+Korteste vei fra 2 til 0 = {[}1, 0{]} = 2
+
+Korteste vei fra 2 til 1 = {[}1{]} = 1
+
+Korteste vei fra 2 til 3 = {[}3{]} = 1
+
+Korteste vei fra 2 til 4 = {[}3, 4{]} = 2
+
+Den totale lengden: 6
+\[\text{Closeness centrality} = \frac{5 - 1}{6} \implies \frac{4}{6} \implies\underline{\underline{ 0.67 }}\]
+
+\textbf{Node 3}, den korteste veien til hver node:
+
+Korteste vei fra 3 til 0 = {[}2, 1, 0{]} = 3
+
+Korteste vei fra 3 til 1 = {[}2, 1{]} = 2
+
+Korteste vei fra 3 til 2 = {[}2{]} = 1
+
+Korteste vei fra 3 til 4 = {[}4{]} = 1
+
+Den totale lengden: 7
+\[\text{Closeness centrality} = \frac{5 - 1}{7} \implies \frac{4}{7} \implies\underline{\underline{ 0.57 }}\]
+
+\textbf{Node 4}, den korteste veien til hver node:
+
+Korteste vei fra 4 til 0 = {[}3, 2, 1, 0{]} = 4
+
+Korteste vei fra 4 til 1 = {[}3, 2, 1{]} = 3
+
+Korteste vei fra 4 til 2 = {[}3, 2{]} = 2
+
+Korteste vei fra 4 til 3 = {[}3{]} = 1
+
+Den totale lengden: 10
+\[\text{Closeness centrality} = \frac{5 - 1}{10} \implies \frac{4}{10} \implies\underline{\underline{ 0.4 }}\]
+
+Noden med høyest closeness centrality er node 2, og dette kommer av at
+den er i midten av bussgrafen og har da kortest totale vei. Det vil si
+at den vil i snitt ha kortere vei til en tilfeldig node i grafen.
+
+    \hypertarget{closesness-centrality-for-ringgraph}{%
+\subsection*{Closesness centrality for
+RingGraph:}\label{closesness-centrality-for-ringgraph}}
+
+\[\text{Formelen for closesness centrality for en node er:}\]
+
+\[\frac{\text{Antall noder - 1}}{\text{Den totale avstanden fra den noden til alle andre noder}}\]
+
+\textbf{Node 0}, den korteste veien til hver node:
+
+Korteste vei fra 0 til 1 = {[}1{]} = 1
+
+Korteste vei fra 0 til 2 = {[}1, 2{]} = 2
+
+Korteste vei fra 0 til 3 = {[}4, 3{]} = 2
+
+Korteste vei fra 0 til 4 = {[}4{]} = 1
+
+Den totale lengden: 6
+\[\text{Closeness centrality} = \frac{5 - 1}{6} \implies \frac{4}{6} \implies\underline{\underline{ 0.67 }}\]
+
+\textbf{Node 1}, den korteste veien til hver node:
+
+Korteste vei fra 1 til 0 = {[}0{]} = 1
+
+Korteste vei fra 1 til 2 = {[}2{]} = 1
+
+Korteste vei fra 1 til 3 = {[}2, 3{]} = 2
+
+Korteste vei fra 1 til 4 = {[}0, 4{]} = 2
+
+Den totale lengden: 6
+\[\text{Closeness centrality} = \frac{5 - 1}{6} \implies \frac{4}{6} \implies\underline{\underline{ 0.67 }}\]
+
+\textbf{Node 2}, den korteste veien til hver node:
+
+Korteste vei fra 2 til 0 = {[}1, 0{]} = 2
+
+Korteste vei fra 2 til 1 = {[}1{]} = 1
+
+Korteste vei fra 2 til 3 = {[}3{]} = 1
+
+Korteste vei fra 2 til 4 = {[}3, 4{]} = 2
+
+Den totale lengden: 6
+\[\text{Closeness centrality} = \frac{5 - 1}{6} \implies \frac{4}{6} \implies\underline{\underline{ 0.67 }}\]
+
+\textbf{Node 3}, den korteste veien til hver node:
+
+Korteste vei fra 3 til 0 = {[}4, 0{]} = 2
+
+Korteste vei fra 3 til 1 = {[}2, 1{]} = 2
+
+Korteste vei fra 3 til 2 = {[}2{]} = 1
+
+Korteste vei fra 3 til 4 = {[}4{]} = 1
+
+Den totale lengden: 6
+\[\text{Closeness centrality} = \frac{5 - 1}{6} \implies \frac{4}{6} \implies\underline{\underline{ 0.67 }}\]
+
+\textbf{Node 4}, den korteste veien til hver node:
+
+Korteste vei fra 4 til 0 = {[}0{]} = 1
+
+Korteste vei fra 4 til 1 = {[}0, 1{]} = 2
+
+Korteste vei fra 4 til 2 = {[}3, 2{]} = 2
+
+Korteste vei fra 4 til 3 = {[}3{]} = 1
+
+Den totale lengden: 6
+\[\text{Closeness centrality} = \frac{5 - 1}{6} \implies \frac{4}{6} \implies\underline{\underline{ 0.67 }}\]
+
+Her ser vi at alle nodene har lik closeness centrality på 0.67. Dette
+vil si at ingen noder har kortere totale sti til alle nodene en noen
+andre noder
+
+    \hypertarget{closesness-centrality-for-stargraph}{%
+\subsection*{Closesness centrality for
+StarGraph:}\label{closesness-centrality-for-stargraph}}
+
+\[\text{Formelen for closesness centrality for en node er:}\]
+
+\[\frac{\text{Antall noder - 1}}{\text{Den totale avstanden fra den noden til alle andre noder}}\]
+
+\textbf{Node 0}, den korteste veien til hver node:
+
+Korteste vei fra 0 til 1 = {[}1{]} = 1
+
+Korteste vei fra 0 til 2 = {[}2{]} = 1
+
+Korteste vei fra 0 til 3 = {[}3{]} = 1
+
+Korteste vei fra 0 til 4 = {[}4{]} = 1
+
+Korteste vei fra 0 til 5 = {[}5{]} = 1
+
+Den totale lengden: 5
+\[\text{Closeness centrality} = \frac{6 - 1}{5} \implies \frac{5}{5} \implies\underline{\underline{ 1.0 }}\]
+
+\textbf{Node 1}, den korteste veien til hver node:
+
+Korteste vei fra 1 til 0 = {[}0{]} = 1
+
+Korteste vei fra 1 til 2 = {[}0, 2{]} = 2
+
+Korteste vei fra 1 til 3 = {[}0, 3{]} = 2
+
+Korteste vei fra 1 til 4 = {[}0, 4{]} = 2
+
+Korteste vei fra 1 til 5 = {[}0, 5{]} = 2
+
+Den totale lengden: 9
+\[\text{Closeness centrality} = \frac{6 - 1}{9} \implies \frac{5}{9} \implies\underline{\underline{ 0.56 }}\]
+
+\textbf{Node 2}, den korteste veien til hver node:
+
+Korteste vei fra 2 til 0 = {[}0{]} = 1
+
+Korteste vei fra 2 til 1 = {[}0, 1{]} = 2
+
+Korteste vei fra 2 til 3 = {[}0, 3{]} = 2
+
+Korteste vei fra 2 til 4 = {[}0, 4{]} = 2
+
+Korteste vei fra 2 til 5 = {[}0, 5{]} = 2
+
+Den totale lengden: 9
+\[\text{Closeness centrality} = \frac{6 - 1}{9} \implies \frac{5}{9} \implies\underline{\underline{ 0.56 }}\]
+
+\textbf{Node 3}, den korteste veien til hver node:
+
+Korteste vei fra 3 til 0 = {[}0{]} = 1
+
+Korteste vei fra 3 til 1 = {[}0, 1{]} = 2
+
+Korteste vei fra 3 til 2 = {[}0, 2{]} = 2
+
+Korteste vei fra 3 til 4 = {[}0, 4{]} = 2
+
+Korteste vei fra 3 til 5 = {[}0, 5{]} = 2
+
+Den totale lengden: 9
+\[\text{Closeness centrality} = \frac{6 - 1}{9} \implies \frac{5}{9} \implies\underline{\underline{ 0.56 }}\]
+
+\textbf{Node 4}, den korteste veien til hver node:
+
+Korteste vei fra 4 til 0 = {[}0{]} = 1
+
+Korteste vei fra 4 til 1 = {[}0, 1{]} = 2
+
+Korteste vei fra 4 til 2 = {[}0, 2{]} = 2
+
+Korteste vei fra 4 til 3 = {[}0, 3{]} = 2
+
+Korteste vei fra 4 til 5 = {[}0, 5{]} = 2
+
+Den totale lengden: 9
+\[\text{Closeness centrality} = \frac{6 - 1}{9} \implies \frac{5}{9} \implies\underline{\underline{ 0.56 }}\]
+
+\textbf{Node 5}, den korteste veien til hver node:
+
+Korteste vei fra 5 til 0 = {[}0{]} = 1
+
+Korteste vei fra 5 til 1 = {[}0, 1{]} = 2
+
+Korteste vei fra 5 til 2 = {[}0, 2{]} = 2
+
+Korteste vei fra 5 til 3 = {[}0, 3{]} = 2
+
+Korteste vei fra 5 til 4 = {[}0, 4{]} = 2
+
+Den totale lengden: 9
+\[\text{Closeness centrality} = \frac{6 - 1}{9} \implies \frac{5}{9} \implies\underline{\underline{ 0.56 }}\]
+
+Her har node 0 høyest closeness centrality på 1, som vil si at den kan
+nå alle de andre nodene direkte, som vi si at de har en avstand på 1.
+
+    \hypertarget{closesness-centrality-for-treegraph}{%
+\subsection*{Closesness centrality for
+TreeGraph:}\label{closesness-centrality-for-treegraph}}
+
+\[\text{Formelen for closesness centrality for en node er:}\]
+
+\[\frac{\text{Antall noder - 1}}{\text{Den totale avstanden fra den noden til alle andre noder}}\]
+
+\textbf{Node 0}, den korteste veien til hver node:
+
+Korteste vei fra 0 til 1 = {[}1{]} = 1
+
+Korteste vei fra 0 til 2 = {[}2{]} = 1
+
+Korteste vei fra 0 til 3 = {[}1, 3{]} = 2
+
+Korteste vei fra 0 til 4 = {[}1, 4{]} = 2
+
+Korteste vei fra 0 til 5 = {[}2, 5{]} = 2
+
+Korteste vei fra 0 til 6 = {[}2, 6{]} = 2
+
+Den totale lengden: 10
+\[\text{Closeness centrality} = \frac{7 - 1}{10} \implies \frac{6}{10} \implies\underline{\underline{ 0.6 }}\]
+
+\textbf{Node 1}, den korteste veien til hver node:
+
+Korteste vei fra 1 til 0 = {[}0{]} = 1
+
+Korteste vei fra 1 til 2 = {[}0, 2{]} = 2
+
+Korteste vei fra 1 til 3 = {[}3{]} = 1
+
+Korteste vei fra 1 til 4 = {[}4{]} = 1
+
+Korteste vei fra 1 til 5 = {[}0, 2, 5{]} = 3
+
+Korteste vei fra 1 til 6 = {[}0, 2, 6{]} = 3
+
+Den totale lengden: 11
+\[\text{Closeness centrality} = \frac{7 - 1}{11} \implies \frac{6}{11} \implies\underline{\underline{ 0.55 }}\]
+
+\textbf{Node 2}, den korteste veien til hver node:
+
+Korteste vei fra 2 til 0 = {[}0{]} = 1
+
+Korteste vei fra 2 til 1 = {[}0, 1{]} = 2
+
+Korteste vei fra 2 til 3 = {[}0, 1, 3{]} = 3
+
+Korteste vei fra 2 til 4 = {[}0, 1, 4{]} = 3
+
+Korteste vei fra 2 til 5 = {[}5{]} = 1
+
+Korteste vei fra 2 til 6 = {[}6{]} = 1
+
+Den totale lengden: 11
+\[\text{Closeness centrality} = \frac{7 - 1}{11} \implies \frac{6}{11} \implies\underline{\underline{ 0.55 }}\]
+
+\textbf{Node 3}, den korteste veien til hver node:
+
+Korteste vei fra 3 til 0 = {[}1, 0{]} = 2
+
+Korteste vei fra 3 til 1 = {[}1{]} = 1
+
+Korteste vei fra 3 til 2 = {[}1, 0, 2{]} = 3
+
+Korteste vei fra 3 til 4 = {[}1, 4{]} = 2
+
+Korteste vei fra 3 til 5 = {[}1, 0, 2, 5{]} = 4
+
+Korteste vei fra 3 til 6 = {[}1, 0, 2, 6{]} = 4
+
+Den totale lengden: 16
+\[\text{Closeness centrality} = \frac{7 - 1}{16} \implies \frac{6}{16} \implies\underline{\underline{ 0.38 }}\]
+
+\textbf{Node 4}, den korteste veien til hver node:
+
+Korteste vei fra 4 til 0 = {[}1, 0{]} = 2
+
+Korteste vei fra 4 til 1 = {[}1{]} = 1
+
+Korteste vei fra 4 til 2 = {[}1, 0, 2{]} = 3
+
+Korteste vei fra 4 til 3 = {[}1, 3{]} = 2
+
+Korteste vei fra 4 til 5 = {[}1, 0, 2, 5{]} = 4
+
+Korteste vei fra 4 til 6 = {[}1, 0, 2, 6{]} = 4
+
+Den totale lengden: 16
+\[\text{Closeness centrality} = \frac{7 - 1}{16} \implies \frac{6}{16} \implies\underline{\underline{ 0.38 }}\]
+
+\textbf{Node 5}, den korteste veien til hver node:
+
+Korteste vei fra 5 til 0 = {[}2, 0{]} = 2
+
+Korteste vei fra 5 til 1 = {[}2, 0, 1{]} = 3
+
+Korteste vei fra 5 til 2 = {[}2{]} = 1
+
+Korteste vei fra 5 til 3 = {[}2, 0, 1, 3{]} = 4
+
+Korteste vei fra 5 til 4 = {[}2, 0, 1, 4{]} = 4
+
+Korteste vei fra 5 til 6 = {[}2, 6{]} = 2
+
+Den totale lengden: 16
+\[\text{Closeness centrality} = \frac{7 - 1}{16} \implies \frac{6}{16} \implies\underline{\underline{ 0.38 }}\]
+
+\textbf{Node 6}, den korteste veien til hver node:
+
+Korteste vei fra 6 til 0 = {[}2, 0{]} = 2
+
+Korteste vei fra 6 til 1 = {[}2, 0, 1{]} = 3
+
+Korteste vei fra 6 til 2 = {[}2{]} = 1
+
+Korteste vei fra 6 til 3 = {[}2, 0, 1, 3{]} = 4
+
+Korteste vei fra 6 til 4 = {[}2, 0, 1, 4{]} = 4
+
+Korteste vei fra 6 til 5 = {[}2, 5{]} = 2
+
+Den totale lengden: 16
+\[\text{Closeness centrality} = \frac{7 - 1}{16} \implies \frac{6}{16} \implies\underline{\underline{ 0.38 }}\]
+
+Her ser vi at node 0 har høyest closeness centrality på 0.6. Denne noden
+er rotnoden i tregrafen, og den vil har kortest vei i snitt til en
+tilfeldig node i grafen
+
+    \hypertarget{closesness-centrality-for-meshgraph}{%
+\subsection*{Closesness centrality for
+MeshGraph:}\label{closesness-centrality-for-meshgraph}}
+
+\[\text{Formelen for closesness centrality for en node er:}\]
+
+\[\frac{\text{Antall noder - 1}}{\text{Den totale avstanden fra den noden til alle andre noder}}\]
+
+\textbf{Node 0}, den korteste veien til hver node:
+
+Korteste vei fra 0 til 1 = {[}1{]} = 1
+
+Korteste vei fra 0 til 2 = {[}2{]} = 1
+
+Korteste vei fra 0 til 3 = {[}3{]} = 1
+
+Korteste vei fra 0 til 4 = {[}4{]} = 1
+
+Den totale lengden: 4
+\[\text{Closeness centrality} = \frac{5 - 1}{4} \implies \frac{4}{4} \implies\underline{\underline{ 1.0 }}\]
+
+\textbf{Node 1}, den korteste veien til hver node:
+
+Korteste vei fra 1 til 0 = {[}0{]} = 1
+
+Korteste vei fra 1 til 2 = {[}2{]} = 1
+
+Korteste vei fra 1 til 3 = {[}3{]} = 1
+
+Korteste vei fra 1 til 4 = {[}4{]} = 1
+
+Den totale lengden: 4
+\[\text{Closeness centrality} = \frac{5 - 1}{4} \implies \frac{4}{4} \implies\underline{\underline{ 1.0 }}\]
+
+\textbf{Node 2}, den korteste veien til hver node:
+
+Korteste vei fra 2 til 0 = {[}0{]} = 1
+
+Korteste vei fra 2 til 1 = {[}1{]} = 1
+
+Korteste vei fra 2 til 3 = {[}3{]} = 1
+
+Korteste vei fra 2 til 4 = {[}4{]} = 1
+
+Den totale lengden: 4
+\[\text{Closeness centrality} = \frac{5 - 1}{4} \implies \frac{4}{4} \implies\underline{\underline{ 1.0 }}\]
+
+\textbf{Node 3}, den korteste veien til hver node:
+
+Korteste vei fra 3 til 0 = {[}0{]} = 1
+
+Korteste vei fra 3 til 1 = {[}1{]} = 1
+
+Korteste vei fra 3 til 2 = {[}2{]} = 1
+
+Korteste vei fra 3 til 4 = {[}4{]} = 1
+
+Den totale lengden: 4
+\[\text{Closeness centrality} = \frac{5 - 1}{4} \implies \frac{4}{4} \implies\underline{\underline{ 1.0 }}\]
+
+\textbf{Node 4}, den korteste veien til hver node:
+
+Korteste vei fra 4 til 0 = {[}0{]} = 1
+
+Korteste vei fra 4 til 1 = {[}1{]} = 1
+
+Korteste vei fra 4 til 2 = {[}2{]} = 1
+
+Korteste vei fra 4 til 3 = {[}3{]} = 1
+
+Den totale lengden: 4
+\[\text{Closeness centrality} = \frac{5 - 1}{4} \implies \frac{4}{4} \implies\underline{\underline{ 1.0 }}\]
+
+I denne grafen har alle nodene closeness centrality på 1, som vil si at
+den kan nå alle de andre nodene direkte, som vi si at de har en avstand
+på 1.
+
+\emph{Merk at ingen av nodene i grafen har closeness centrality på 0,
+for at det må til er avstanden til en node være uendelig som vil si at
+det ikke finnes en vei til den noden, dette vil si at alle disse grafene
+er sammenhengene og nodene kan nås fra hivlken som helst node}
+
+    \hypertarget{oppgave-1.6}{%
+\subsection*{Oppgave 1.6}\label{oppgave-1.6}}
+
+Degree distribution kan vises med et histogram. Hva er degree
+distribution og hvorfor er det logisk å se på det med et histogram?
+
+For hver av grafene, lag et histogram over degree distribution og
+kommenter hva du ser.
+
+\begin{itemize}
+\tightlist
+\item
+  Bruk metoden histogram() for å gjøre dette
+\end{itemize}
+
+VI forventer å se at studenten har skjønt hva et degree distribution
+representerer og bruken av denne. I tillegg forventer vi et histogram
+per graf, med en kort kommentar på hva dette histogrammet forteller om
+grafen
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{19}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Lag alle histogrammene under}
+\PY{n}{BussGraph}\PY{p}{(}\PY{l+m+mi}{5}\PY{p}{)}\PY{o}{.}\PY{n}{histogram}\PY{p}{(}\PY{p}{)}
+\PY{n}{RingGraph}\PY{p}{(}\PY{l+m+mi}{5}\PY{p}{)}\PY{o}{.}\PY{n}{histogram}\PY{p}{(}\PY{p}{)}
+\PY{n}{StarGraph}\PY{p}{(}\PY{l+m+mi}{5}\PY{p}{)}\PY{o}{.}\PY{n}{histogram}\PY{p}{(}\PY{p}{)}
+\PY{n}{TreeGraph}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{)}\PY{o}{.}\PY{n}{histogram}\PY{p}{(}\PY{p}{)}
+\PY{n}{MeshGraph}\PY{p}{(}\PY{l+m+mi}{5}\PY{p}{)}\PY{o}{.}\PY{n}{histogram}\PY{p}{(}\PY{p}{)}\PY{p}{;}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Oving3-revidert-v1_files/Oving3-revidert-v1_33_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Oving3-revidert-v1_files/Oving3-revidert-v1_33_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Oving3-revidert-v1_files/Oving3-revidert-v1_33_2.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Oving3-revidert-v1_files/Oving3-revidert-v1_33_3.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Oving3-revidert-v1_files/Oving3-revidert-v1_33_4.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{kommenter-foreldingen-av-node-degrees-som-vises-i-histogrammene-her}{%
+\section*{Kommenter foreldingen av node degrees som vises i histogrammene
+her:}\label{kommenter-foreldingen-av-node-degrees-som-vises-i-histogrammene-her}}
+
+Det er logisk å se på et histogram av degree distribution fordi når det
+blir et stort nettverk, kan det være vannskelig å få oversikten og se på
+kjennetegnene nettverket har
+
+\hypertarget{bussgraph}{%
+\subsection*{BussGraph}\label{bussgraph}}
+
+Her ser vi at histogrammet viser 2 noder med degree 1 og 3 med degree 2.
+Siden den ikke er noen noder med degree 0, kan vi trygt si at grafen er
+\emph{connected} som vil si at alle nodene kan nås fra hvilken som helst
+node ved hjelp av nabonodene, dette gjelder også for de andre grafene
+som vises.
+
+\hypertarget{ringgraph}{%
+\subsection*{RingGraph}\label{ringgraph}}
+
+Her ser vi at alle nodene har degree 2, dette vil si at det er en
+eularian path. og alle grafene kan vises \emph{topologisk} som er ring.
+
+\hypertarget{stargraph}{%
+\subsection*{StarGraph}\label{stargraph}}
+
+Her ser vi at det er 5 noder med degree 1 og nøyaktig én node med degree
+5. Eneste måten man kan tilfedstille dette på er at alle nodene med 1
+degree har kanten sin med den med degree 5.
+
+\hypertarget{treegraph}{%
+\subsection*{TreeGraph}\label{treegraph}}
+
+Her ser vi at det er 4 noder med degree 1, og i en \emph{TreeGraph}
+betyr det at de nodene er såkalte \emph{``løvnoder''}.
+
+Også ser vi at det er 1 node med degree 2, siden denne tregrafen
+splitter i 2 hver gang, kan vi si at den har 2 \emph{barn} og ingen
+\emph{forelder} som vi si at det er \emph{rotnoden}.
+
+Det er også 2 noder med degree 3, som i en tregraf med 2 \emph{barn} vil
+si at den har 2 \emph{barn} og en \emph{forelder}.
+
+\hypertarget{meshgraph}{%
+\subsection*{MeshGraph}\label{meshgraph}}
+
+Her er det 5 noder av degree 4, som vil si at alle nodene har en kant
+til alle andre noder minus seg selv
+
+    \hypertarget{del-2-strukturanalyse}{%
+\section*{Del 2: Strukturanalyse}\label{del-2-strukturanalyse}}
+
+I denne delen skal vi introdusere flere grafstrukturer. Disse
+grafstrukturene er mer komplekse, men gjenspeiler bedre relle nettverk.
+Et tips her er å bruke seed=student\_seed for å få samme graf her gang.
+
+    \hypertarget{oppgave-2.1}{%
+\subsection*{Oppgave 2.1}\label{oppgave-2.1}}
+
+Lag følgende 4 grafer, alle med 100 noder:
+
+\begin{verbatim}
+Graf 1: En Barabasi Albert graf med parameter m=1
+Graf 2: En Barabasi Albert graf med parameter m=2
+Graf 3: En Watts Strogatz graf med parametre k=2 og p=0.1
+Graf 4: En Watts Strogatz graf med parametre k=4 og p=0.1
+\end{verbatim}
+
+For hver av grafene, tegn de og lag et histogram over degree
+distribution.
+
+Her forventer vi at de fire grafene blir konstruert og printet. Vi
+forventer også å se et histogram for hver graf
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{159}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Kode her}
+\PY{n}{b1} \PY{o}{=} \PY{n}{BarabasiAlbert}\PY{p}{(}\PY{n}{n}\PY{o}{=} \PY{l+m+mi}{100}\PY{p}{,} \PY{n}{m}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{seed}\PY{o}{=}\PY{n}{student\PYZus{}seed}\PY{p}{)}
+\PY{n}{b2} \PY{o}{=} \PY{n}{BarabasiAlbert}\PY{p}{(}\PY{n}{n}\PY{o}{=} \PY{l+m+mi}{100}\PY{p}{,} \PY{n}{m}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{,} \PY{n}{seed}\PY{o}{=}\PY{n}{student\PYZus{}seed}\PY{p}{)}
+
+\PY{n}{w1} \PY{o}{=} \PY{n}{WattsStrogatz}\PY{p}{(}\PY{n}{n}\PY{o}{=}\PY{l+m+mi}{100}\PY{p}{,} \PY{n}{k}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{,} \PY{n}{p}\PY{o}{=}\PY{l+m+mf}{0.1}\PY{p}{,} \PY{n}{seed}\PY{o}{=}\PY{n}{student\PYZus{}seed}\PY{p}{)}
+\PY{n}{w2} \PY{o}{=} \PY{n}{WattsStrogatz}\PY{p}{(}\PY{n}{n}\PY{o}{=}\PY{l+m+mi}{100}\PY{p}{,} \PY{n}{k}\PY{o}{=}\PY{l+m+mi}{4}\PY{p}{,} \PY{n}{p}\PY{o}{=}\PY{l+m+mf}{0.1}\PY{p}{,} \PY{n}{seed}\PY{o}{=}\PY{n}{student\PYZus{}seed}\PY{p}{)}
+
+\PY{n}{b1}\PY{o}{.}\PY{n}{histogram}\PY{p}{(}\PY{p}{)}
+\PY{n}{b2}\PY{o}{.}\PY{n}{histogram}\PY{p}{(}\PY{p}{)}
+\PY{n}{w1}\PY{o}{.}\PY{n}{histogram}\PY{p}{(}\PY{p}{)}
+\PY{n}{w2}\PY{o}{.}\PY{n}{histogram}\PY{p}{(}\PY{p}{)}
+
+\PY{n}{b1}\PY{o}{.}\PY{n}{draw}\PY{p}{(}\PY{p}{)}
+\PY{n}{b2}\PY{o}{.}\PY{n}{draw}\PY{p}{(}\PY{p}{)}
+\PY{n}{w1}\PY{o}{.}\PY{n}{draw}\PY{p}{(}\PY{p}{)}
+\PY{n}{w2}\PY{o}{.}\PY{n}{draw}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Oving3-revidert-v1_files/Oving3-revidert-v1_37_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Oving3-revidert-v1_files/Oving3-revidert-v1_37_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Oving3-revidert-v1_files/Oving3-revidert-v1_37_2.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Oving3-revidert-v1_files/Oving3-revidert-v1_37_3.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Oving3-revidert-v1_files/Oving3-revidert-v1_37_4.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Oving3-revidert-v1_files/Oving3-revidert-v1_37_5.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Oving3-revidert-v1_files/Oving3-revidert-v1_37_6.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Oving3-revidert-v1_files/Oving3-revidert-v1_37_7.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{oppgave-2.1.1}{%
+\subsection*{Oppgave 2.1.1}\label{oppgave-2.1.1}}
+
+Kommenter histogrammene over på hensyn av eventuelle styrker og
+sårbarheter de forskjellige grafene har
+
+Her forventer vi en sammenhengende tekst der man ser på likheter og
+forskjeller mellom de forskjellige grafene, med fokus på styrker og
+sårbarheter
+
+    \hypertarget{forklaring-her}{%
+\section*{Forklaring her:}\label{forklaring-her}}
+
+\hypertarget{barabasialbert-m1}{%
+\subsection*{BarabasiAlbert (m=1):}\label{barabasialbert-m1}}
+
+Her ser vi at at det er klart flest noder med 1 degree, Også er det noen
+får noder med svært høy degree
+
+\hypertarget{svakheter}{%
+\subsubsection*{Svakheter:}\label{svakheter}}
+
+Nodene med mange kanter vil ha høy \emph{betweennes centrality}, fordi
+den korteste veien fra en node til en annen har høy sannylighet til å
+være via den.
+
+Dette vil si at den noden vil motta høy trafikk og om den blir fjernet
+vil mange noder ikke kunne snakke med hverandre
+
+\hypertarget{styrker}{%
+\subsubsection*{Styrker:}\label{styrker}}
+
+Siden det er lett å finne disse nodene med høy degree kan man i et
+nettverk gjøre disse nodene robuste og rakse slik at det har kapasiteten
+til å håndtere trafikken mellom nodene
+
+\hypertarget{barabasialbert-m2}{%
+\subsection*{BarabasiAlbert (m=2):}\label{barabasialbert-m2}}
+
+Her ser vi at det ikke er noen noder med lavere degree enn 2. Det er
+fler noder med fler kanter enn på BA (m=1) som vil gjøre at trafikken
+blir mer fordelt gjennom de nodene. Det er også mange fler degrees i
+denne grafen enn i BA(m=1)
+
+\hypertarget{svakheter-1}{%
+\subsubsection*{Svakheter:}\label{svakheter-1}}
+
+Det er veldig mange degrees i grafen som gjør at det kan bli kostbart og
+kontruere og vedlikeholde
+
+\hypertarget{styrker-1}{%
+\subsubsection*{Styrker:}\label{styrker-1}}
+
+Det vil være større sansylighet for at det er kortere veier fra en node
+til en annen enn i BA (m=2) som vil redusere trafikk
+
+\hypertarget{wattsstrogatz-k2-p0.1}{%
+\subsection*{WattsStrogatz (k=2, p=0.1):}\label{wattsstrogatz-k2-p0.1}}
+
+Her ser vi at alle nodene har degree mellom 1 og 3, som vil si at det er
+ingen noder som har høy degree
+
+\hypertarget{svakheter-2}{%
+\subsubsection*{Svakheter:}\label{svakheter-2}}
+
+Man kan se at grafen er bygd opp en \emph{ringGrafer} og
+\emph{bussgrafer} som går ut av ringen, om man fjerner den en node i
+ronggrafen som er koblet opp til en buss, vi hele bussen miste
+\emph{kontakten} med resten av grafen \#\#\# Styrker: Det er veldig få
+kanter, fordi ingen har høy kantverdi dette vil si at det ikke er så
+kostbart å konstruere og vedlikeholde
+
+\hypertarget{wattsstrogatz-k4-p0.1}{%
+\subsection*{WattsStrogatz (k=4, p=0.1):}\label{wattsstrogatz-k4-p0.1}}
+
+Her ser vi at det er ingen noder med degree 1 og veldig få med degreee
+2,
+
+Det er også ingen noder med høyere grad enn 5, med liket til WS (k=2)
+som kun har 4 \#\#\# Svakheter: Utrolig mange kanter, dette kan gjøre
+det veldig kostbart å kostruere og vedlikeholde \#\#\# Styrker: Ingen
+noder med høyere enn 5 kanter, dette gjør det vannskelig for hackere å
+målrette seg mot én spesiell kant
+
+    \hypertarget{oppgave-2.1.2}{%
+\subsection*{Oppgave 2.1.2}\label{oppgave-2.1.2}}
+
+Konstruer et nettverk bestående av mellom 9 og 15 noder, med en node som
+har høyest betweenness centrality, og en av de laveste degree centrality
+
+Her forventer vi at studenten holder seg innenfor grensen på 9-15 noder,
+samt har konstruert en graf der en node har høyest betweenness
+centrality, men også en av de laveste degree centralitiene
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{11}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Kode her}
+
+\PY{n}{graph} \PY{o}{=} \PY{n}{Graph}\PY{p}{(}\PY{p}{)}
+\PY{n}{graph}\PY{o}{.}\PY{n}{add\PYZus{}node}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{TARGET}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+
+\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{:}
+    \PY{n}{mesh} \PY{o}{=} \PY{n}{MeshGraph}\PY{p}{(}\PY{n+nb}{range}\PY{p}{(}\PY{n}{i}\PY{o}{*}\PY{l+m+mi}{6}\PY{p}{,} \PY{p}{(}\PY{n}{i}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)}\PY{o}{*}\PY{l+m+mi}{6}\PY{p}{)}\PY{p}{)}
+    \PY{n}{graph}\PY{o}{.}\PY{n}{add\PYZus{}nodes\PYZus{}from}\PY{p}{(}\PY{n}{mesh}\PY{o}{.}\PY{n}{nodes}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+    \PY{n}{graph}\PY{o}{.}\PY{n}{add\PYZus{}edges\PYZus{}from}\PY{p}{(}\PY{n}{mesh}\PY{o}{.}\PY{n}{edges}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+    \PY{n}{graph}\PY{o}{.}\PY{n}{add\PYZus{}edges\PYZus{}from}\PY{p}{(}\PY{p}{[}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{TARGET}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{i}\PY{o}{*}\PY{l+m+mi}{6}\PY{p}{)}\PY{p}{,}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{TARGET}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{i}\PY{o}{*}\PY{l+m+mi}{6} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{]}\PY{p}{)}
+
+\PY{n}{graph}\PY{o}{.}\PY{n}{draw\PYZus{}betweenness\PYZus{}centrality}\PY{p}{(}\PY{p}{)}
+\PY{n}{graph}\PY{o}{.}\PY{n}{draw\PYZus{}degree\PYZus{}centrality}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Oving3-revidert-v1_files/Oving3-revidert-v1_41_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Oving3-revidert-v1_files/Oving3-revidert-v1_41_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{oppgave-2.2}{%
+\subsection*{Oppgave 2.2}\label{oppgave-2.2}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{14}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{networkURL} \PY{o}{=} \PY{n}{get\PYZus{}network}\PY{p}{(}\PY{n}{student\PYZus{}seed}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} Du kan bruke variabelen networkURL som parameter i RealNetworkGraph}
+\PY{c+c1}{\PYZsh{} Ved å bruke student\PYZus{}seed vil metoden hente samme nettverk hver gang}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+You will analyze the Garr201110 network.
+Your network graph file is http://www.topology-zoo.org/files/Garr201110.graphml
+
+    \end{Verbatim}
+
+    I denne oppgaven skal vi analysere et ekte nettverk. Klassen
+RealNetworkGraph() tar inn en url av en fil med filtypen .graphml. Lag
+et objekt for nettverket du får i koden over og tegn det. Filene som kan
+analyseres finnes på nettsiden www.topology-zoo.org/dataset.html.
+Funksjonen over henter ut en ``.graphml'' fil du kan bruke, du kan
+eventuelt hente den ut selv og se på andre ved å se på nettsiden.
+
+Her forventer vi å se at studenten klarer å hente ut grafen som er blitt
+tildelt, konstruerer den og viser den frem i cellen nedenfor.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{15}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Konstruer og tegn nettverket her}
+\PY{n}{rng} \PY{o}{=} \PY{n}{RealNetworkGraph}\PY{p}{(}\PY{n}{networkURL}\PY{p}{)}
+\PY{n}{rng}\PY{o}{.}\PY{n}{draw}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Oving3-revidert-v1_files/Oving3-revidert-v1_45_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{oppgave-2.2.1}{%
+\subsection*{Oppgave 2.2.1}\label{oppgave-2.2.1}}
+
+Plott et histogram over degree distribution for nettverket over. Hva
+forteller histogrammet deg?
+
+Her forventer vi å se et histogram og en tekst om hva histogrammet
+forteller. Her kan det være lurt å blande inn histogrammer fra tidligere
+oppgaver, og bruke disse til å drøfte det reelle nettverket.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{17}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Kode}
+\PY{n}{rng}\PY{o}{.}\PY{n}{histogram}\PY{p}{(}\PY{p}{)}\PY{p}{;}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Oving3-revidert-v1_files/Oving3-revidert-v1_47_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{forklaring}{%
+\subsection*{Forklaring}\label{forklaring}}
+
+Dette histogrammet likner på en Barabasi Albert graf med m=2 (se oppg
+2.1), fordi den har noen noder med mange node degrees. Disse nodene er
+sentrale for at nettverket skal kjøre.
+
+Vi ser også at det er de fleste endeSystemene, kun er koblet opp til en
+sentral node. Dette vil si at hvis den sentrale noden feiler, så vil
+ikke disse endesystemene kunne kommunistere med nettverket
+
+    \hypertarget{oppgave-2.2.2}{%
+\subsection*{Oppgave 2.2.2}\label{oppgave-2.2.2}}
+
+Under er det oppgitt en funksjon for å gi ut hvilke noder som er
+viktigst med de tre funksjonalitetene. Bruk funksjonen på grafen. Er
+noen noder viktig i flere av sentralitetene? Hvorfor?
+
+Her forventer vi at studenten klarer å bruke metoden som er gitt, til å
+finne de viktigste nodene i hver kategori. Deretter forventer vi at
+studenten klarer å finne noder som er viktige i flere kategorier, og
+drøfter kort rundt dette.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{12}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{get\PYZus{}centrality\PYZus{}table}\PY{p}{(}\PY{n}{graph}\PY{p}{)}\PY{p}{:}
+    \PY{n}{deg}\PY{o}{=} \PY{n}{graph}\PY{o}{.}\PY{n}{degree\PYZus{}centrality}\PY{p}{(}\PY{p}{)}
+    \PY{n+nb+bp}{cls} \PY{o}{=} \PY{n}{graph}\PY{o}{.}\PY{n}{closeness\PYZus{}centrality}\PY{p}{(}\PY{p}{)}
+    \PY{n}{betw} \PY{o}{=} \PY{n}{graph}\PY{o}{.}\PY{n}{betweenness\PYZus{}centrality}\PY{p}{(}\PY{p}{)}
+    \PY{n}{lst} \PY{o}{=} \PY{p}{[}\PY{n}{deg}\PY{p}{,}\PY{n+nb+bp}{cls}\PY{p}{,}\PY{n}{betw}\PY{p}{]}
+    \PY{k}{for} \PY{n}{i}\PY{p}{,}\PY{n}{obj} \PY{o+ow}{in} \PY{n+nb}{enumerate}\PY{p}{(}\PY{n}{lst}\PY{p}{)}\PY{p}{:}
+        \PY{n}{values} \PY{o}{=} \PY{p}{[}\PY{p}{(}\PY{n}{graph}\PY{o}{.}\PY{n}{nodes}\PY{p}{[}\PY{n}{k}\PY{p}{]}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{label}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{,}\PY{n}{v}\PY{p}{)} \PY{k}{for} \PY{n}{k}\PY{p}{,} \PY{n}{v} \PY{o+ow}{in} \PY{n+nb}{sorted}\PY{p}{(}\PY{n}{obj}\PY{o}{.}\PY{n}{items}\PY{p}{(}\PY{p}{)}\PY{p}{,} \PY{n}{key}\PY{o}{=}\PY{k}{lambda} \PY{n}{item}\PY{p}{:} \PY{n}{item}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}\PY{p}{]}
+        \PY{n}{values}\PY{o}{.}\PY{n}{reverse}\PY{p}{(}\PY{p}{)}
+        \PY{n}{lst}\PY{p}{[}\PY{n}{i}\PY{p}{]} \PY{o}{=} \PY{n}{values}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{Centrality Indexer,}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{\PYZhy{}sortert i synkende rekkefølge}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+se}{\PYZbs{}033}\PY{l+s+s2}{[1m}\PY{l+s+s2}{\PYZdq{}} \PY{o}{+} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Degree}\PY{l+s+s2}{\PYZdq{}}\PY{o}{.}\PY{n}{ljust}\PY{p}{(}\PY{l+m+mi}{20}\PY{p}{)} \PY{o}{+} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Closeness}\PY{l+s+s2}{\PYZdq{}}\PY{o}{.}\PY{n}{ljust}\PY{p}{(}\PY{l+m+mi}{20}\PY{p}{)} \PY{o}{+} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Betweenes}\PY{l+s+s2}{\PYZdq{}}\PY{o}{.}\PY{n}{ljust}\PY{p}{(}\PY{l+m+mi}{20}\PY{p}{)} \PY{o}{+} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+se}{\PYZbs{}033}\PY{l+s+s1}{[0m}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+    \PY{k}{for} \PY{n}{deg}\PY{p}{,}\PY{n+nb+bp}{cls}\PY{p}{,}\PY{n}{betw} \PY{o+ow}{in} \PY{n+nb}{zip}\PY{p}{(}\PY{o}{*}\PY{n}{lst}\PY{p}{)}\PY{p}{:}
+        \PY{n+nb}{print}\PY{p}{(}\PY{n}{deg}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{ljust}\PY{p}{(}\PY{l+m+mi}{20}\PY{p}{)} \PY{o}{+} \PY{n+nb+bp}{cls}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{ljust}\PY{p}{(}\PY{l+m+mi}{20}\PY{p}{)} \PY{o}{+} \PY{n}{betw}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{ljust}\PY{p}{(}\PY{l+m+mi}{20}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{18}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Kode her}
+\PY{n}{get\PYZus{}centrality\PYZus{}table}\PY{p}{(}\PY{n}{rng}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+Centrality Indexer,
+-sortert i synkende rekkefølge
+
+\textbf{Degree              Closeness           Betweenes           }
+MI-2                RM-2                RM-2
+RM-2                BO                  MI-2
+MI-1                MI-2                BO
+BO                  MI-1                CT
+BA                  NA                  NA
+PD                  RM-1                MI-1
+CT                  BA                  BA
+RM-1                PD                  RM-1
+NA                  CA-1                PD
+PI                  AN                  FI
+CO                  PI                  CA-1
+FI                  FRA                 PI
+CA-1                CO                  AN
+AN                  MI-3                TO
+TO                  TN                  Pv
+MI-3                AQ-1                PD-2
+Pv                  FI                  PA
+AQ                  FUC                 CS
+FRA                 PG                  MI-3
+GE                  NAMEX               CO
+MI-4                TO                  TN
+TN                  CT                  AQ-1
+PD-2                GE                  GE
+PA                  Fe                  AQ
+CS                  BO-3                TS-1
+TS-1                Pv                  Ur
+AQ-1                MI-4                Fe
+Ur                  Google              TO-PIX
+Fe                  Level 3             BS
+TO-PIX              MIX                 GEANT
+BS                  GEANT               Google
+GEANT               TS-1                FG
+Google              GEANT               LE
+FG                  Global Crossing     MT
+LE                  Svizzera            FRA
+MT                  CB                  CB
+CB                  SA                  PZ
+PZ                  AQ                  SA
+SA                  PD-2                MI-4
+VE                  FG                  VE
+Fi                  LE                  Fi
+FUC                 MT                  FUC
+BO-3                PZ                  BO-3
+Level 3             VSIX                Level 3
+MIX                 SS                  MIX
+EUMED CONNECT       CA                  EUMED CONNECT
+ME                  Ur                  ME
+VSIX                BS                  VSIX
+TIX                 Fi                  TIX
+CZ                  TIX                 CZ
+PG                  PA                  PG
+Pv-1                CS                  Pv-1
+PA-2                TO-PIX              PA-2
+SS                  EUMED CONNECT       SS
+NAMEX               ME                  NAMEX
+GEANT               Pv-1                GEANT
+Global Crossing     VE                  Global Crossing
+CA                  CZ                  CA
+Svizzera            PA-2                Svizzera
+    \end{Verbatim}
+
+    \hypertarget{forklaring}{%
+\subsection*{Forklaring}\label{forklaring}}
+
+\textbf{MI-2} noden scorer høyest på degree centrality, fordi den har 13
+noder, som er flest noden i grafen
+
+\textbf{RM-2} node har høyest closeness- og betweennes-verdi og den har
+nest høyest degree-verdi
+
+\textbf{RM-2}:
+
+\begin{verbatim}
+Den har høyest betweenness-verdi fordi kantene til noden strekker over til kanter er "langt" unna hverandre,
+sett bort ifra den selv. Dette vil si at de andre kantene som skal over til en som egentlig er "langt" unna, kan
+bruke RM-2 noden for få kortest mulig sti.
+
+Den har høyest closeness-verdi også av samme grunn som betweenness som gjør at den korteste veien til alle noder
+blir kort fordi den slipper å ta den vanlige veien.
+
+Den har nest høyest degree, som kommer av at den har 11 kanter som er nest mest i denne grafen. dette gjør noden sentral.
+\end{verbatim}
+
+    \hypertarget{oppgave-2.3}{%
+\subsection*{Oppgave 2.3}\label{oppgave-2.3}}
+
+ConstructedGraph() simulerer et reelt nettverk, bestående av et
+kjernenett med grid-struktur, et regionalnett og et tettbebygd
+aksessnett. Bruk klassen og tegn grafen.
+
+For hver av de tre centralitiene, finn de mest sentrale nodene og tegn
+de. Hvor ligger de viktigste nodene, og hvordan ville du beskrevet
+robustheten til regionalnettet?
+
+Her forventer vi at studenten klarer å bruke ConstructedGraph() til å
+printe ut et reelt nettverk, og at studenten skjønner hvilke deler dette
+nettverket er bygget opp av. Deretter forventer vi at studenten viser de
+mest sentrale nodene innenfor hver kategori, forteller hvor i grafen de
+ligger, og drøfter robustheten til regionalnettet.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{10}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Kode her}
+\PY{n}{cg} \PY{o}{=} \PY{n}{ConstructedGraph}\PY{p}{(}\PY{p}{)}
+
+\PY{n}{deg}\PY{o}{=} \PY{n}{cg}\PY{o}{.}\PY{n}{degree\PYZus{}centrality}\PY{p}{(}\PY{p}{)}
+\PY{n}{betw} \PY{o}{=} \PY{n}{cg}\PY{o}{.}\PY{n}{betweenness\PYZus{}centrality}\PY{p}{(}\PY{p}{)}
+\PY{n+nb+bp}{cls} \PY{o}{=} \PY{n}{cg}\PY{o}{.}\PY{n}{closeness\PYZus{}centrality}\PY{p}{(}\PY{p}{)}
+
+
+\PY{c+c1}{\PYZsh{} get the node(s) with the max value, there might be more nodes with the same max value}
+\PY{n}{mx\PYZus{}deg} \PY{o}{=} \PY{n+nb}{max}\PY{p}{(}\PY{n}{deg}\PY{o}{.}\PY{n}{values}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\PY{n}{max\PYZus{}deg} \PY{o}{=} \PY{p}{[}\PY{n}{k} \PY{k}{for} \PY{n}{k}\PY{p}{,} \PY{n}{v} \PY{o+ow}{in} \PY{n}{deg}\PY{o}{.}\PY{n}{items}\PY{p}{(}\PY{p}{)} \PY{k}{if} \PY{n}{v} \PY{o}{==} \PY{n}{mx\PYZus{}deg}\PY{p}{]}
+\PY{n}{cg}\PY{o}{.}\PY{n}{mark\PYZus{}nodes}\PY{p}{(}\PY{n}{max\PYZus{}deg}\PY{p}{)}
+
+\PY{n}{mx\PYZus{}betw} \PY{o}{=} \PY{n+nb}{max}\PY{p}{(}\PY{n}{betw}\PY{o}{.}\PY{n}{values}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\PY{n}{max\PYZus{}betw} \PY{o}{=} \PY{p}{[}\PY{n}{k} \PY{k}{for} \PY{n}{k}\PY{p}{,} \PY{n}{v} \PY{o+ow}{in} \PY{n}{betw}\PY{o}{.}\PY{n}{items}\PY{p}{(}\PY{p}{)} \PY{k}{if} \PY{n}{v} \PY{o}{==} \PY{n}{mx\PYZus{}betw}\PY{p}{]}
+\PY{n}{cg}\PY{o}{.}\PY{n}{mark\PYZus{}nodes}\PY{p}{(}\PY{n}{max\PYZus{}betw}\PY{p}{)}
+
+\PY{n}{mx\PYZus{}cls} \PY{o}{=} \PY{n+nb}{max}\PY{p}{(}\PY{n+nb+bp}{cls}\PY{o}{.}\PY{n}{values}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\PY{n}{max\PYZus{}cls} \PY{o}{=} \PY{p}{[}\PY{n}{k} \PY{k}{for} \PY{n}{k}\PY{p}{,} \PY{n}{v} \PY{o+ow}{in} \PY{n+nb+bp}{cls}\PY{o}{.}\PY{n}{items}\PY{p}{(}\PY{p}{)} \PY{k}{if} \PY{n}{v} \PY{o}{==} \PY{n}{mx\PYZus{}cls}\PY{p}{]}
+\PY{n}{cg}\PY{o}{.}\PY{n}{mark\PYZus{}nodes}\PY{p}{(}\PY{n}{max\PYZus{}cls}\PY{p}{)}
+
+\PY{n}{maxes} \PY{o}{=} \PY{p}{\PYZob{}}\PY{p}{\PYZcb{}}
+\PY{n}{maxes}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Degree centrality}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{=} \PY{n}{max\PYZus{}deg}
+\PY{n}{maxes}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Betweenness centrality}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{=} \PY{n}{max\PYZus{}betw}
+\PY{n}{maxes}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Closeness centrality}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{=} \PY{n}{max\PYZus{}cls}
+\PY{k}{for} \PY{n}{name}\PY{p}{,} \PY{n}{maks} \PY{o+ow}{in} \PY{n}{maxes}\PY{o}{.}\PY{n}{items}\PY{p}{(}\PY{p}{)}\PY{p}{:}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Mest sentrale node for}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{name}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{er:}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{maks}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Mest sentrale node for Degree centrality er: ['d0', 'aa0', 'ab0', 'ac0', 'ad0',
+'ba0', 'bb0', 'bc0', 'bd0']
+Mest sentrale node for Betweenness centrality er: ['d0']
+Mest sentrale node for Closeness centrality er: ['core4']
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Oving3-revidert-v1_files/Oving3-revidert-v1_54_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Oving3-revidert-v1_files/Oving3-revidert-v1_54_2.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Oving3-revidert-v1_files/Oving3-revidert-v1_54_3.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{forklaring}{%
+\subsection*{Forklaring}\label{forklaring}}
+
+I første grafen over kan en se at en har røttene i de tettbebygde
+aksessnettene som har høyest ``Degree centrality''. Dette er fordi de
+kommuniserer med ende-systemene som det ofte er flest av. Deres
+robusthet er ikke særlig sterk da det ikke er noen særlig fail-safe om
+de skulle feile, noe som kan kutte endesystemer fra nettet.
+
+I andre grafen ser en den mest sentrale noden basert på Betweenness. At
+det er nettop d0 er nok fordi den har en ekstra kant til core8 og får
+derfor ekstra veier gjennom seg. Ellers kunne det vært en gitt rotnode
+for regional-nettene ut ifra kjernen. For det er nettop disse alle
+trafiikken må gjennom for å nå noder i regionalnettene. At disse nodene
+står alene for al trafiiken ut til reional-nettene kan gjøre nettet
+svært sårbart, og bør kanskje forsterkes.
+
+I siste grafen er den mest sentrale noden basert på ``Closeness''. Her
+er det svært robust at en har en kjerne-node som den noden med kortest
+vei til alle. Dermed kan distribuere informasjon på en mest mulig
+effektiv måte.
+
+    \hypertarget{del-3-angrep-og-robusthet}{%
+\section*{Del 3: Angrep og robusthet}\label{del-3-angrep-og-robusthet}}
+
+Her skal vi analysere og diskutere det simulerte nettverket fra oppgave
+2.3 i dybden. I denne oppgaven vil vi bruke en utvidet versjon av
+nettverket. Kjør cellen for å generere nettverket
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{35}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{cg} \PY{o}{=} \PY{n}{ConstructedGraph}\PY{p}{(}\PY{n}{expanded}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,} \PY{n}{seed}\PY{o}{=}\PY{n}{student\PYZus{}seed}\PY{p}{)}
+\PY{n}{cg}\PY{o}{.}\PY{n}{draw}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Oving3-revidert-v1_files/Oving3-revidert-v1_57_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{oppgave-3.1}{%
+\subsection*{Oppgave 3.1}\label{oppgave-3.1}}
+
+Bruk de numeriske verdiene for de forskjellige centrality-målene for å
+finne hvilke noder i nettverket som er viktigst. Er det noen av nodene
+som overrasker deg?
+
+Her forventer vi å se at studenten bruker metoder som tidligere har
+blitt introdusert, til å finne de viktigste nodene i grafen. Deretter
+forventer vi å se en kort drøftende tekst på hvilke noder dette gjelder.
+
+    \hypertarget{forklaring}{%
+\paragraph{Forklaring}\label{forklaring}}
+
+Som en ser i grafen under er det tydelig at alle kjerne-nodene er
+sentrale for driften av nettverket, uansett hvilken centrality en ser
+på. De er de mest tilgjengelige siden grafen har like egenskaper som en
+tree-graph. Kjernen er også robust da de har høy Degree centrality
+mellom seg, som gjør det lett å kunne videreformidle informasjon om det
+skjer en feil en kjerne-node.
+
+Det som overasker er hvor mye nettverket er avhengige av robuste noder
+rett utenfor kjernen, altså noder som a0 og c0. Om disse feiler vil en
+kutte av en gitt fjerdel av nettverket siden betweenessen avhenger av de
+alene for hele regional-nettverket. Det samme gjelder også for nodene
+som ba0 og bc0 for å kunne nå endesystemene.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{161}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Kode og forkaring her}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{1. Degree Centrality}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{cg}\PY{o}{.}\PY{n}{draw\PYZus{}degree\PYZus{}centrality}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+1. Degree Centrality
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Oving3-revidert-v1_files/Oving3-revidert-v1_60_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{162}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{2. Closeness Centrality}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{cg}\PY{o}{.}\PY{n}{draw\PYZus{}closeness\PYZus{}centrality}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+2. Closeness Centrality
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Oving3-revidert-v1_files/Oving3-revidert-v1_61_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{163}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{3. Betweenness Centrality}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{cg}\PY{o}{.}\PY{n}{draw\PYZus{}betweenness\PYZus{}centrality}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+3. Betweenness Centrality
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Oving3-revidert-v1_files/Oving3-revidert-v1_62_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{oppgave-3.2}{%
+\subsection*{Oppgave 3.2}\label{oppgave-3.2}}
+
+Bruk metoden delete\_random\_nodes for å simulere tilfeldige feil som
+kan skje i nettverket. * Fjern en node. Tegn så grafen * Fjern tre
+noder. Tegn så grafen
+
+Kommenter skaden av nettverket
+
+Her forventer vi å se at studenten klarer å printe ut to forskjellige
+grafer, en der en node er fjernet og en der tre noder er fjernet. Disse
+nodene skal være fjernet ved å bruke delete\_random\_nodes. Forventer
+også et kort analyse over nettverket, og drøftning av skaden disse
+feilene påførte nettverket. Her kan man dra inn metoder tidligere brukt
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{164}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Skriv koden her}
+\PY{n}{c} \PY{o}{=} \PY{n}{ConstructedGraph}\PY{p}{(}\PY{n}{expanded}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,} \PY{n}{seed}\PY{o}{=}\PY{l+m+mi}{10027}\PY{p}{)}
+\PY{n}{graf}\PY{p}{,} \PY{n}{graf1}\PY{p}{,} \PY{n}{graf2} \PY{o}{=} \PY{n}{c}\PY{p}{,} \PY{n}{c}\PY{p}{,} \PY{n}{c}\PY{p}{,}
+\PY{n}{graf1} \PY{o}{=} \PY{n}{graf1}\PY{o}{.}\PY{n}{delete\PYZus{}random\PYZus{}nodes}\PY{p}{(}\PY{p}{)}\PY{p}{;}
+\PY{n}{graf2} \PY{o}{=} \PY{n}{graf2}\PY{o}{.}\PY{n}{delete\PYZus{}random\PYZus{}nodes}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{)}\PY{p}{;}
+
+\PY{n}{graf1}\PY{o}{.}\PY{n}{draw}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Removed node bc0 using random\_fault
+Removed node bc0 using random\_fault
+Removed node ba31 using random\_fault
+Removed node ba51 using random\_fault
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Oving3-revidert-v1_files/Oving3-revidert-v1_64_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{165}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{graf2}\PY{o}{.}\PY{n}{draw}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Oving3-revidert-v1_files/Oving3-revidert-v1_65_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{166}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{graf}\PY{o}{.}\PY{n}{mark\PYZus{}nodes}\PY{p}{(}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{bc0}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ba31}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ba51}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Oving3-revidert-v1_files/Oving3-revidert-v1_66_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{node-feil}{%
+\subsubsection*{1 Node-feil}\label{node-feil}}
+
+Når en node feiler er det bc0 som går bort. Dette er svært alvorlig for
+dette nettverket, da et helt regional-nett er avhengig av betweennessen
+gjennom denne. Som vist i tredje grafen fører feilen av bc0 til at cirka
+en fjerdel av nettet faller bort.
+
+\hypertarget{node--feil}{%
+\subsubsection*{3 Node -feil}\label{node--feil}}
+
+I det andre tilfellet der 3 noder feiler mister vi den samme som før,
+samt to ende-noder: ba31 og ba51. At disse to faller bort er ikke særlig
+alvorlig for selve nettverket, da ikke mye avhenger av deres tilkobling.
+Men at bc0 faller bort er katastrofalt.
+
+\textbf{nb}: i de to første grafene blir de avkuttede nodene kastet i
+midten, fant ingen fiks på det
+
+    \hypertarget{oppgave-3.3}{%
+\subsection*{Oppgave 3.3}\label{oppgave-3.3}}
+
+Prøv å angripe nettverket ved å bruke en kombinasjon av logisk tenkning
+og verdiene fra oppgave 3.1. Oppgaven her er å gjøre så mye skade som
+mulig ved å fjerne tre noder.
+
+For hver node du velger å fjerne, begrunn hvorfor.
+
+Her forventer vi at studenten har forstått oppgaven og velger å fjerne
+tre noder som er svært sentrale. Forventer å se begrunnelse/tankegang
+for hver node som fjernes.
+
+    \hypertarget{angrep}{%
+\paragraph{Angrep}\label{angrep}}
+
+Planen for å gjøre mest skade blir å prøve å separere så mange subnett
+fra kjernen som mulig, dette kan gjøres ved å gjenkjenne de nodene med
+høy betweenness. Disse er ofte knyttepunkter, dermed kan en bruke disse
+til å prøve å isolere subnett
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{170}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{attackGraph} \PY{o}{=} \PY{n}{ConstructedGraph}\PY{p}{(}\PY{n}{expanded}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,} \PY{n}{seed}\PY{o}{=}\PY{l+m+mi}{10027}\PY{p}{)}\PY{p}{;}
+
+\PY{n}{attackGraph}\PY{o}{.}\PY{n}{mark\PYZus{}nodes}\PY{p}{(}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{a0}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{d0}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{core4}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Oving3-revidert-v1_files/Oving3-revidert-v1_70_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Det første vi gjør er å angripe nodene a0 og d0. Disse er to rotnoder
+for nettverk utifra kjernen, og de er på hver sin side av nettverket,
+som isolerer etterfølgerne deres, samt gjør det mulig for å videre
+isolere subnett.
+
+Deretter angriper vi core4, som dermed kutter ut core1 og rotnoden b0,
+som kutter hele sitt tre ut av nettverket Dermed står en kun igjen med
+fire separate subnett der kun to av de har kjerne-noder i seg, noe som
+vil være katastrofalt
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{171}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{attackGraph}\PY{o}{.}\PY{n}{remove\PYZus{}node}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{a0}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{attackGraph}\PY{o}{.}\PY{n}{remove\PYZus{}node}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{d0}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{attackGraph}\PY{o}{.}\PY{n}{remove\PYZus{}node}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{core4}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+
+\PY{n}{attackGraph}\PY{o}{.}\PY{n}{draw}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Oving3-revidert-v1_files/Oving3-revidert-v1_72_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{oppgave-3.4}{%
+\subsection*{Oppgave 3.4}\label{oppgave-3.4}}
+
+En måte å se hvor mye skade som har blitt gjort på et nettverk er å
+bruke noder i største partisjon, eller se på node degree ved hjelp av et
+histogram.
+
+Bruk disse metodene på oppgave 3.2 og 3.3, og diskuter skadene ut ifra
+resultatene du nå har fått.
+
+Her forventer vi å se at studenten klarer å vise et histogram og klarer
+å bruke metoden for å finne noder i største partisjon. Vi forventer også
+å se en drøftning av konsekvensene i de to foregående oppgavene, og at
+studenten skjønner alvorligheten i målrettede angrep.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{172}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Kode her}
+\PY{n}{main} \PY{o}{=} \PY{n}{ConstructedGraph}\PY{p}{(}\PY{n}{expanded}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,} \PY{n}{seed}\PY{o}{=}\PY{l+m+mi}{10027}\PY{p}{)}\PY{p}{;}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Utgangspunktet}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{cg}\PY{o}{.}\PY{n}{histogram}\PY{p}{(}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Største partisjon:}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{main}\PY{o}{.}\PY{n}{get\PYZus{}largest\PYZus{}components\PYZus{}size}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Oppgave 3.2}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{graf2}\PY{o}{.}\PY{n}{histogram}\PY{p}{(}\PY{p}{)}\PY{p}{;}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Største partisjon:}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{graf2}\PY{o}{.}\PY{n}{get\PYZus{}largest\PYZus{}components\PYZus{}size}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Oppgave 3.3}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{attackGraph}\PY{o}{.}\PY{n}{histogram}\PY{p}{(}\PY{p}{)}\PY{p}{;}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Største partisjon:}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{attackGraph}\PY{o}{.}\PY{n}{get\PYZus{}largest\PYZus{}components\PYZus{}size}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Utgangspunktet
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Oving3-revidert-v1_files/Oving3-revidert-v1_74_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Største partisjon: 129
+Oppgave 3.2
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Oving3-revidert-v1_files/Oving3-revidert-v1_74_3.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Største partisjon: 114
+Oppgave 3.3
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Oving3-revidert-v1_files/Oving3-revidert-v1_74_5.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Største partisjon: 34
+    \end{Verbatim}
+
+    \hypertarget{forklaring}{%
+\section*{Forklaring}\label{forklaring}}
+
+\hypertarget{section*}{%
+\subsection*{3.2}\label{section*}}
+
+Her kan en se at feilene ikke hadde betydelig utslag på histografen. Den
+største partisjonen gikk også fra 129 til 114, noe som ikke nødendgivs
+er katastrofalt for nettvkerket, men samtidig svært alvorlig.
+
+\hypertarget{section*-1}{%
+\subsection*{3.3}\label{section*-1}}
+
+Utslaget ved dette angrepet vises best i at noder som tidligere haddde 2
+eller 4 kanter, nå har 1 eller 3. Dette reflekterer vårt mål om å dele
+nettverket inn i subnett. Største partisjonen ble også redusert til 34!
+Noe som er katastrofalt for funksjonaliteten til nettverket. Dette viser
+at planlagt angrep av ondsinnde aktører vil kunne føre til ekstreme
+konsekvenser.
+
+    \hypertarget{oppgave-3.5}{%
+\subsection*{Oppgave 3.5}\label{oppgave-3.5}}
+
+Forklar hva som menes med begrepet noder i største partisjon. Hva kan
+være fordeler og ulemper ved å kun bruke noder i største partisjon og
+histogram som pålitelighetsmål? Er dette fornuftig i vårt tilfelle?
+
+Her forventer vi å se at studenten har forstått begrepet noder i største
+partisjon, og hvorfor dette kan brukes til å vise sårbarhet. Vi
+forventer også en drøftning av hvorfor/hvorfor ikke, det kan være lurt å
+bruke noder i største partisjon og histogram som de eneste
+pålitelighetsmålene.
+
+    \hypertarget{forklaring}{%
+\section*{Forklaring}\label{forklaring}}
+
+\hypertarget{noder-i-stuxf8rst-partisjon}{%
+\subsubsection*{Noder i størst
+partisjon}\label{noder-i-stuxf8rst-partisjon}}
+
+Begrepet betyr at en ser på hvor mange noder den største partisjonen i
+grafen inneholder før og etter en endring. I vårt tilfelle så vi først
+på det totale antall noder som er sammnenhengende i grafen, og så etter
+et angrep telte vi hvor mange noder vi hadde ``mistet''. Å bruke dette
+som en målestokk avhenger av hva slags nettverk en bruker. I et
+Peer-To-Peer nettverk vil det være et ekstremt nyttig verktøy da en ser
+på nodene som ``likeverdige''. Men i andre sammenhnger da en har noder
+som er dedikerte til funksjonalitet som leverandører av en tjeneste(som
+for eksmpel servere), og noen som kun er forbrukere, vil en først og
+fremst fokusere på de få serverene og ikke nødvendigvis de mange
+forbrukerne. Dermed vil ikke hvor mange noder man mistet være fokuset,
+men hvilke spesielle noder man mistet.
+
+\hypertarget{histogram}{%
+\subsubsection*{Histogram}\label{histogram}}
+
+I nettverk med mange Stjerne-liknende grafer i seg kan histogram ganske
+effektivt sjekke for om man har mistet spesielle typer noder, for
+eksempel har serevere ett til mange relasjoner med noder i nettverket,
+da kan man sjekke for om man har mistet noder med nettop mange kanter i
+seg. Hvis man da krysjekker med metoden over vil man kunne finne mye
+informasjon om hvilke, og hvilke typer noder man har mistet.
+
+Disse to metodene kan flettes godt med hverandre for å drøfte
+sårbarheter i nettverk, det er selvsagt ikke lurt å kun bruke disse
+sammen, og ihvertfall ikke hver for seg. Men de er fine for å få et
+ovrblikk.
+
+    \hypertarget{oppgave-3.6}{%
+\subsection*{Oppgave 3.6}\label{oppgave-3.6}}
+
+Under ser du metoden for å lage en graf som sammenligner angrep med
+forskjellige metoder. Bruk metoden på det originale nettverket og
+sammenlign med det samme nettverket der du har lagt inn tre ekstra
+kanter som redundans. Diskuter kort effekten av ekstra redundans.
+
+Her forventer vi å se at studenten har klart å bruke metoden som er gitt
+til å vise skaden på det originale nettverket. Deretter forventer vi å
+se at studenten klarer å legge inn tre ekstra kanter, og begrunne
+hvorfor disse tre kantene er valgt. Til slutt vil vi se en kort
+diskusjon av effekten vi får av å legge til ekstra kanter i et nettverk.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{173}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{get\PYZus{}attack\PYZus{}graph}\PY{p}{(}\PY{n}{G}\PY{p}{)}\PY{p}{:}
+    \PY{n}{count} \PY{o}{=} \PY{n}{G}\PY{o}{.}\PY{n}{number\PYZus{}of\PYZus{}nodes}\PY{p}{(}\PY{p}{)}
+    \PY{n}{outputs} \PY{o}{=} \PY{p}{[}\PY{p}{[}\PY{l+m+mi}{0} \PY{k}{for} \PY{n}{\PYZus{}} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{count}\PY{p}{)}\PY{p}{]} \PY{k}{for} \PY{n}{\PYZus{}} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{4}\PY{p}{)}\PY{p}{]}
+    \PY{n}{graphs} \PY{o}{=} \PY{p}{[}\PY{n}{G} \PY{k}{for} \PY{n}{\PYZus{}} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{4}\PY{p}{)}\PY{p}{]}
+    \PY{n}{x} \PY{o}{=} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{n}{count}\PY{p}{)}
+
+    \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n}{x}\PY{p}{:}
+        \PY{k}{for} \PY{n}{j}\PY{p}{,} \PY{n}{graph} \PY{o+ow}{in} \PY{n+nb}{enumerate}\PY{p}{(}\PY{n}{graphs}\PY{p}{)}\PY{p}{:}
+            \PY{n}{outputs}\PY{p}{[}\PY{n}{j}\PY{p}{]}\PY{p}{[}\PY{n}{i}\PY{p}{]} \PY{o}{=} \PY{n}{graphs}\PY{p}{[}\PY{n}{j}\PY{p}{]}\PY{o}{.}\PY{n}{get\PYZus{}largest\PYZus{}components\PYZus{}size}\PY{p}{(}\PY{p}{)}
+        \PY{n}{graphs}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{=} \PY{n}{graphs}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{delete\PYZus{}random\PYZus{}nodes}\PY{p}{(}\PY{n}{print\PYZus{}result}\PY{o}{=}\PY{k+kc}{False}\PY{p}{)}
+        \PY{n}{graphs}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{=} \PY{n}{graphs}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{.}\PY{n}{delete\PYZus{}nodes\PYZus{}attack}\PY{p}{(}\PY{n}{centrality\PYZus{}index}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{degree}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{print\PYZus{}result}\PY{o}{=}\PY{k+kc}{False}\PY{p}{)}
+        \PY{n}{graphs}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]} \PY{o}{=} \PY{n}{graphs}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{o}{.}\PY{n}{delete\PYZus{}nodes\PYZus{}attack}\PY{p}{(}\PY{n}{centrality\PYZus{}index}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{closeness}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{print\PYZus{}result}\PY{o}{=}\PY{k+kc}{False}\PY{p}{)}
+        \PY{n}{graphs}\PY{p}{[}\PY{l+m+mi}{3}\PY{p}{]} \PY{o}{=} \PY{n}{graphs}\PY{p}{[}\PY{l+m+mi}{3}\PY{p}{]}\PY{o}{.}\PY{n}{delete\PYZus{}nodes\PYZus{}attack}\PY{p}{(}\PY{n}{centrality\PYZus{}index}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{betweenness}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{print\PYZus{}result}\PY{o}{=}\PY{k+kc}{False}\PY{p}{)}
+
+    \PY{n}{bc1}\PY{p}{,}\PY{n}{bc2}\PY{p}{,}\PY{n}{bc3}\PY{p}{,}\PY{n}{bc4} \PY{o}{=} \PY{n}{outputs}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{x}\PY{p}{,}\PY{n}{bc1}\PY{p}{,}\PY{n}{color}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{red}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{label}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Random faults}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{x}\PY{p}{,}\PY{n}{bc2}\PY{p}{,}\PY{n}{color}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{green}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{label}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Degree centrality}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{x}\PY{p}{,}\PY{n}{bc3}\PY{p}{,}\PY{n}{color}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{blue}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{label}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Closeness Centrality}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{x}\PY{p}{,}\PY{n}{bc4}\PY{p}{,}\PY{n}{color}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{orange}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Betweenness Centrality}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Amount of nodes in largest partition}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Amount of nodes in removed}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{legend}\PY{p}{(}\PY{n}{loc}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{upper right}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{174}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{org} \PY{o}{=} \PY{n}{ConstructedGraph}\PY{p}{(}\PY{n}{expanded}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,} \PY{n}{seed}\PY{o}{=}\PY{l+m+mi}{10027}\PY{p}{)}
+
+\PY{n}{get\PYZus{}attack\PYZus{}graph}\PY{p}{(}\PY{n}{org}\PY{p}{)}
+
+
+\PY{n}{org}\PY{o}{.}\PY{n}{add\PYZus{}node}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{r0}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{org}\PY{o}{.}\PY{n}{add\PYZus{}node}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{r1}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{org}\PY{o}{.}\PY{n}{add\PYZus{}node}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{r2}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+
+\PY{n}{org}\PY{o}{.}\PY{n}{add\PYZus{}edges\PYZus{}from}\PY{p}{(}\PY{p}{[}
+    \PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{r0}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{a4}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{,}
+    \PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{r0}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{core1}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{,}
+    \PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{r0}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{b1}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{,}
+    \PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{r1}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{b4}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{,}
+    \PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{r1}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{d1}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{,}
+    \PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{r2}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{c1}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{,}
+    \PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{r2}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{d4}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{,}
+    \PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{r2}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{core7}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Oving3-revidert-v1_files/Oving3-revidert-v1_80_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{strategi}{%
+\subsubsection*{Strategi}\label{strategi}}
+
+Etter angrepet er det tydelig at nodene rett utenfor kjernen er det mest
+utsatte, dermed virker det naturlig å fortsterke deres koblinger til
+resten av nettverket. Å utvide kjernen sine koblinger mellom grenene, og
+dermed øke antall stier til hver ende-node er beste måten å styrke
+grafen.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{175}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{get\PYZus{}attack\PYZus{}graph}\PY{p}{(}\PY{n}{org}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Oving3-revidert-v1_files/Oving3-revidert-v1_82_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{resultat}{%
+\subsubsection*{Resultat}\label{resultat}}
+
+Etter de tre forsterkende nodene er betydelig bedre. Man en kan se at
+grafen ikke er like bratt. Naturligvis vil det å fjerne flere enn 15
+noder gjøre stor skade, uansett hvor mange kanter man legger til som
+redundans. Effekten av å legge til kanter vil som regel gjøre nettverket
+mer robust, i form av at det tåler mer trafikk og håndterer at noder
+feiler bedre. Det vil også gjøre det mer effektivt ved at man får flere
+stier. Det som er ulempen er at det blir mer kostbart å opprettholde og
+vedlikeholde.
+
+    \hypertarget{del-4-sikring-av-vdes}{%
+\section*{Del 4: Sikring av VDES}\label{del-4-sikring-av-vdes}}
+
+Du er nå ansatt som en sikkerhetsingeniør i VDES; og har som oppgave å
+sikrenettverket mot angrep, både mot ondsinnede handlinger og tilfeldige
+feil . Her er det viktig å analysere nettverket, finne low-hanging
+fruits og legge på ekstra redundans der det trengs, uten at kostnadene
+skal bli unødvendig høye. Bruk metodene som er lært i øvingen for å
+analysere og sikre nettverket. Forklar dine valg. Drøft konsekvensene av
+at ondsinnede aktører får tak i informasjonen rundt nettverket ditt.
+
+Analysen skal vise en gjennomgående forståelse av grafteori og
+grafteoretisk strukturell analyse. Bruk av fagbegreper og relevante
+begreper blir vektlagt. Oppgaven skal være kort og konsis og maks 800
+ord. Start oppgaven med et bilde av nettverket og vis til figurer,
+histogrammer og grafer hvordan du vil sikre nettverket. Utforsk gjerne
+med å legge til redundans, teste angrep og vurdere tiltakene med
+histogram over node degree. Inkluder robusthetsgrafen og bruk den for å
+se på effekten. Bruk koden og resultatene som dokumentasjon for
+tiltakene og hva din anbefaling blir til VDES selskapet.
+
+Netverket du skal analysere finner du vek å kjøre kodeblokken under:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{177}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{r}\PY{o}{.}\PY{n}{seed}\PY{p}{(}\PY{n}{student\PYZus{}seed}\PY{p}{)}
+\PY{n}{boat\PYZus{}count} \PY{o}{=} \PY{n}{r}\PY{o}{.}\PY{n}{randint}\PY{p}{(}\PY{l+m+mi}{4}\PY{p}{,}\PY{l+m+mi}{9}\PY{p}{)}
+\PY{n}{satellite\PYZus{}count} \PY{o}{=} \PY{n}{r}\PY{o}{.}\PY{n}{randint}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{)}
+\PY{n}{radio\PYZus{}tower\PYZus{}count} \PY{o}{=} \PY{n}{r}\PY{o}{.}\PY{n}{randint}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{)}
+
+\PY{n}{vdesGraph} \PY{o}{=} \PY{n}{VDESGraph}\PY{p}{(}\PY{n}{boat\PYZus{}count}\PY{p}{,}\PY{n}{satellite\PYZus{}count}\PY{p}{,}\PY{n}{radio\PYZus{}tower\PYZus{}count}\PY{p}{)}
+\PY{n}{vdesGraph}\PY{o}{.}\PY{n}{draw}\PY{p}{(}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Histogram av grafen}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{vdesGraph}\PY{o}{.}\PY{n}{histogram}\PY{p}{(}\PY{p}{)}\PY{p}{;}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Oving3-revidert-v1_files/Oving3-revidert-v1_85_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Histogram av grafen
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Oving3-revidert-v1_files/Oving3-revidert-v1_85_2.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{styrker}{%
+\subsubsection*{Styrker}\label{styrker}}
+
+Gjennom histogrammet kan en se at det er kun to noder som har en kant i
+seg. I grafen ser en også at disse to kun er radiotårn, noe som er
+ideelt da de er de billigste elementene av nettverket, og at det ikke er
+risiko for tap av menneskeliv om de går tapt. Det viktigste er nemlig at
+båtene minst har to noder å kommunisere med, slik at en kan oprettholde
+kommunkasjon med omverdenen. Siden vårt nettverk har det, er vi sikret
+en type ``fail-safe'' ved at enhver båt sannysnligvis alltid har minst
+en node å kommunisere med.
+
+\hypertarget{svakheter}{%
+\subsubsection*{Svakheter}\label{svakheter}}
+
+Et såpass bra knyttet nettverk kan også være en svakhet, fordi om en
+ondsinnet aktør finner en såkalt ``zero day vulnerability'' og gjennom
+den, eller noen fysiske svakheter få injisert nettverket med malware,
+vil alle noder være utsatt for angrepet. Siden det er mange noder med
+\textgreater3 grader vil en dårlig pakke også kunne spre seg fort over
+nettverket.
+
+\hypertarget{tiltak}{%
+\subsubsection*{Tiltak}\label{tiltak}}
+
+Siden satelitt-dekningen her er såpass god kan en eliminere risikoen ved
+å ha utsatte radiotårn på bakken. Ved metoden reduce kan en redusere
+kommunikasjonen med tårnene og heller bruke de som en failsafe om
+satelittene skulle feile. Eller så kan en lage en type rettet graf den
+en kun tillater enveis kommunkasjon mot land, om en er i nød eller
+liknende, og heller tillate toveis-kommunikasjon som en failsafe.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{178}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{vdes} \PY{o}{=} \PY{n}{VDESGraph}\PY{p}{(}\PY{n}{boat\PYZus{}count}\PY{p}{,}\PY{n}{satellite\PYZus{}count}\PY{p}{,}\PY{n}{radio\PYZus{}tower\PYZus{}count}\PY{p}{)}
+
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Nettverk uten radiotårn}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{vdes}\PY{o}{.}\PY{n}{remove\PYZus{}node}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{radio\PYZus{}tower0}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{vdes}\PY{o}{.}\PY{n}{remove\PYZus{}node}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{radio\PYZus{}tower1}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{vdes}\PY{o}{.}\PY{n}{remove\PYZus{}node}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{radio\PYZus{}tower2}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{vdes}\PY{o}{.}\PY{n}{remove\PYZus{}node}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{radio\PYZus{}tower3}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{vdes}\PY{o}{.}\PY{n}{remove\PYZus{}node}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{radio\PYZus{}tower4}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{vdes}\PY{o}{.}\PY{n}{draw}\PY{p}{(}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Histogram uten radiotårn}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{vdes}\PY{o}{.}\PY{n}{histogram}\PY{p}{(}\PY{p}{)}\PY{p}{;}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Nettverk uten radiotårn
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Oving3-revidert-v1_files/Oving3-revidert-v1_87_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Histogram uten radiotårn
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Oving3-revidert-v1_files/Oving3-revidert-v1_87_3.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Her kan en se at nettverket fortsatt er veldig knyttet og histogrammet
+sier fortsatt at alle noder har \textgreater2 kanter, som igjen betyr at
+en alltid har en failsafe om en node skulle feile.
+
+Dette kan jo igjen bety at nettverket er mer utsatt for angrep siden en
+har færre noder. Så vi kan simulere et angrep der en ondsinned aktør
+planlegger å deaktivere de to mest sentrale satelittene i nettverket.
+Dette kan blant annet forekomme ved at en injiserer satelitten med
+dårlig pakker som overskriver noe intern kode. Eller å produsere et
+såkalt Distributed Denial of Service attack(DDoS) som overbelaster
+nodene med trafikk.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{179}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{vdes}\PY{o}{.}\PY{n}{remove\PYZus{}node}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{satilite0}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{vdes}\PY{o}{.}\PY{n}{remove\PYZus{}node}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{satilite1}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{vdes}\PY{o}{.}\PY{n}{draw}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Oving3-revidert-v1_files/Oving3-revidert-v1_89_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Her har vi da fått en ring-graf med en båt liggende utenfor rekkevidde
+av kommunikasjon. Dette er selvfølgelig katastrofalt for båten som nå
+ikke har noen form for navigasjon eller informasjon fra utsiden. Men
+rent grafisk er det et lovende resultat. Å miste de to mest sentrale
+satelittene, og fortsatt ha kommunkasjon med 83.3\% av nodene er svært
+robust.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{180}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{vd} \PY{o}{=} \PY{n}{VDESGraph}\PY{p}{(}\PY{n}{boat\PYZus{}count}\PY{p}{,}\PY{n}{satellite\PYZus{}count}\PY{p}{,}\PY{n}{radio\PYZus{}tower\PYZus{}count}\PY{p}{)}
+\PY{n}{vd}\PY{o}{.}\PY{n}{remove\PYZus{}node}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{satilite0}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{vd}\PY{o}{.}\PY{n}{remove\PYZus{}node}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{satilite1}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{vd}\PY{o}{.}\PY{n}{draw}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Oving3-revidert-v1_files/Oving3-revidert-v1_91_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Hvis vi setter i verk det tiltaket med å redusere bruken av radiotårn
+ville det være et robust system, der ``boat4'' fortsatt kunne
+kommunisere nød til land og dermed være trygg.
+
+Et slikt nettverk vil kunne være svært robust mot sannsynlige angrep mot
+den fysiske infrastrukturen til VDES. At en da faser ut av slike trusler
+betyr også at digitale angrep blir mer sannsynlige, så en må derfor være
+bevisst på å sørge for at spesielt satelitter har sterke brannmurer mot
+dårlig pakker, og at de tåler belastningen som tårnene tok seg av.
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+\end{document}
