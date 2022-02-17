@@ -6,8 +6,11 @@ const { users } = data
 
 
 
-const hash = (data) => {
+const hash1 = (data) => {
     return createHash('sha256').update(data).digest('hex')
+}
+const hash = (password) => {
+    return password;
 }
 
 
